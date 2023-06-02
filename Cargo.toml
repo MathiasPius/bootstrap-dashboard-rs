@@ -1,0 +1,21 @@
+[package]
+name = "dashboard"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+askama = { version = "0.12.0" }
+include_dir = { version = "0.7.3" }
+axum = { version = "0.6.16", optional = true }
+mime_guess = { version = "2.0.4", optional = true }
+
+[features]
+default = ["axum"]
+axum = ["dep:axum", "dep:mime_guess"]
+
+[dev-dependencies]
+tracing-subscriber = "0.3.17"
+tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
