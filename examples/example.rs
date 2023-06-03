@@ -6,6 +6,8 @@ use axum::{
     Router,
 };
 use bootstrap_dashboard::{
+    card::Card,
+    grid::{Breakpoint, Row},
     icons, Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink,
     Sidebar, SubGroup, UserInfo,
 };
@@ -49,10 +51,16 @@ async fn index() -> impl IntoResponse {
 }
 
 async fn configuration() -> impl IntoResponse {
+    let first_card = Card::new("Hello world")
+        .with_header("First card")
+        .with_size(Breakpoint::Medium, 6);
+
+    let row1 = Row::new().add_column(first_card);
+
     Html(
         dashboard_builder()
             .with_active_label("Configuration")
-            .replace_content("This is the configuration page!")
+            .replace_content(row1)
             .to_string(),
     )
 }

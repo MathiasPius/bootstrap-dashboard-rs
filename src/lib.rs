@@ -9,8 +9,10 @@ pub use askama;
 use askama::Template;
 
 mod alerts;
+pub mod card;
 mod color;
 pub mod files;
+pub mod grid;
 pub mod icons;
 mod sidebar;
 mod userinfo;

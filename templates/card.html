@@ -1,0 +1,12 @@
+<div class="card shadow">
+    {% match header %}
+        {% when Some with (header) %}
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ header }}</h6>
+            </div>
+        {% when None %}
+    {% endmatch %}
+    <div class="card-body">
+        {{ content }}
+    </div>
+</div>
