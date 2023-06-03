@@ -1,5 +1,5 @@
 use axum::{
-    body::{self, Full},
+    body::Full,
     http::{header, HeaderValue, Response, StatusCode},
     response::{Html, IntoResponse},
     routing::get,
@@ -21,7 +21,6 @@ async fn main() {
         .route("/img/undraw_profile.svg", get(serve_profile_image))
         .merge(dashboard::files::serve_at("/static-path/*path"));
 
-    
     println!("Example running at http://localhost:3000");
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
