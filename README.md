@@ -1,3 +1,14 @@
+# bootstrap-dashboard
+
+<!-- cargo-rdme start -->
+
+Batteries-included bootstrap-based dashboard template.
+
+This crate provides structures and enums for rendering interactive dashboards based on [SB-Admin-2](https://startbootstrap.com/theme/sb-admin-2)
+
+See [examples/example.rs](examples/example.rs) for usage instructions.
+
+<!-- cargo-rdme end -->
 
 # License
 

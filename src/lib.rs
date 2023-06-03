@@ -1,3 +1,8 @@
+//! Batteries-included bootstrap-based dashboard template.
+//! 
+//! This crate provides structures and enums for rendering interactive dashboards based on [SB-Admin-2](https://startbootstrap.com/theme/sb-admin-2)
+//! 
+//! See [examples/example.rs](examples/example.rs) for usage instructions.
 use std::{borrow::Cow, fmt::Display};
 
 pub use askama;
@@ -6,13 +11,13 @@ use askama::Template;
 mod alerts;
 mod color;
 pub mod files;
-mod fontawesome;
+pub mod icons;
 mod sidebar;
 mod userinfo;
 
 pub use alerts::*;
 pub use color::*;
-pub use fontawesome::*;
+pub use icons::Icon;
 pub use sidebar::*;
 pub use userinfo::*;
 
@@ -75,8 +80,8 @@ pub struct IconLink {
 #[derive(Template)]
 #[template(path = "dashboard.html")]
 pub struct Dashboard<Content: Display> {
-    /// Used in the top-left corner as well as the copyright notice.
-    pub brand_name: &'static str,
+    /// Used for copyright notice.
+    pub copyright: &'static str,
     /// Path where static resources for the dashboard are served.
     ///
     /// See [`files::serve_at`] for more informationa as well as an example

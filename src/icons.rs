@@ -1,3 +1,4 @@
+//! Font-Awesome icons
 use std::{borrow::Cow, fmt::Display};
 
 /// Font-Awesome Icon
@@ -16,6 +17,7 @@ impl Display for Icon {
     }
 }
 
+/// Statically typed font-awesome icons.
 pub mod fa {
     use super::Icon;
     use std::borrow::Cow;
