@@ -6,8 +6,8 @@ use axum::{
     Router,
 };
 use dashboard::{
-    Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink, Sidebar,
-    SubGroup, Template, UserInfo,
+    fa, Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink, Sidebar,
+    SubGroup, UserInfo,
 };
 
 #[tokio::main]
@@ -47,20 +47,20 @@ async fn dashboard() -> impl IntoResponse {
             static_path: "/static-path",
             sidebar: Sidebar {
                 name: "Dashboard".into(),
-                logo: "fa-laugh-wink".into(),
+                logo: fa::LAUGH_SQUINT,
                 groups: vec![
                     Group {
                         label: None,
                         items: vec![
                             NavItem::Link(IconLink {
                                 label: "Dashboard".into(),
-                                icon: "fa-tachometer-alt".into(),
+                                icon: fa::TACHOMETER_ALT,
                                 action: LinkAction::Href("/".into()),
                                 active: true,
                             }),
                             NavItem::Link(IconLink {
                                 label: "Configuration".into(),
-                                icon: "fa-cogs".into(),
+                                icon: fa::COGS,
                                 action: LinkAction::Href("/".into()),
                                 active: false,
                             }),
@@ -71,7 +71,7 @@ async fn dashboard() -> impl IntoResponse {
                         items: vec![
                             NavItem::Collapsible {
                                 label: "Collapsible".into(),
-                                icon: "fa-list".into(),
+                                icon: fa::LIST,
                                 subgroups: vec![
                                     SubGroup {
                                         label: None,
@@ -115,7 +115,7 @@ async fn dashboard() -> impl IntoResponse {
                             },
                             NavItem::Link(IconLink {
                                 label: "Plain Link".into(),
-                                icon: "fa-bell".into(),
+                                icon: fa::BELL,
                                 action: LinkAction::Href("/".into()),
                                 active: false,
                             }),
@@ -127,14 +127,14 @@ async fn dashboard() -> impl IntoResponse {
                 alerts: vec![
                     Alert {
                         color: Color::Primary,
-                        icon: "fa-donate".into(),
+                        icon: fa::MONEY_BILL,
                         headline: "December 7, 1991".to_string(),
                         message: "A new monthly report is ready to download!".to_string(),
                         unread: true,
                     },
                     Alert {
                         color: Color::Secondary,
-                        icon: "fa-donate".into(),
+                        icon: fa::DONATE,
                         headline: "December 7, 1991".to_string(),
                         message: "$290.29 has been deposited into your account!".to_string(),
                         unread: false,
@@ -149,26 +149,26 @@ async fn dashboard() -> impl IntoResponse {
                     vec![
                         IconLink {
                             label: "Profile".into(),
-                            icon: "fa-user".into(),
+                            icon: fa::USER,
                             action: LinkAction::Href("/".into()),
                             active: false,
                         },
                         IconLink {
                             label: "Settings".into(),
-                            icon: "fa-cogs".into(),
+                            icon: fa::COGS,
                             action: LinkAction::Href("/".into()),
                             active: false,
                         },
                         IconLink {
                             label: "Activity Log".into(),
-                            icon: "fa-list".into(),
+                            icon: fa::LIST,
                             action: LinkAction::Href("/".into()),
                             active: false,
                         },
                     ],
                     vec![IconLink {
                         label: "Logout".into(),
-                        icon: "fa-sign-out-alt".into(),
+                        icon: fa::SIGN_OUT_ALT,
                         action: LinkAction::ToggleModal("logoutModal".into()),
                         active: false,
                     }],
@@ -176,7 +176,6 @@ async fn dashboard() -> impl IntoResponse {
             }),
             content: "Hello world!",
         }
-        .render()
-        .unwrap(),
+        .to_string(),
     )
 }

@@ -2,6 +2,8 @@ use std::borrow::Cow;
 
 use askama::Template;
 
+use crate::Icon;
+
 use super::{IconLink, PlainLink};
 
 /// Sidebar menu [`Group`]s have optional labels, and are always
@@ -23,7 +25,7 @@ pub enum NavItem {
         /// Label for the collapsible menu item.
         label: Cow<'static, str>,
         /// Font-Awesome icon.
-        icon: Cow<'static, str>,
+        icon: Icon,
         /// [`SubGroup`] elements contained within the collapsible menu.
         subgroups: Vec<SubGroup>,
     },
@@ -46,22 +48,22 @@ pub struct SubGroup {
 }
 
 /// Dashboard logo and title as well as left-hand side menu.
-/// 
+///
 /// Supports both plain links and collapsible categories of links via
 /// [`NavItem::Link`] and [`NavItem::Collapsible`] respectively.
-/// 
+///
 /// ## Structure
-/// 
+///
 /// [`Sidebar`] contains many [`Group`]s.
-/// 
+///
 /// Each [`Group`]:
 /// * Optionally has a header label.
 /// * Contains many [`NavItem`]s.
-/// 
+///
 /// Each [`NavItem`] is *either*:
 /// * a [`NavItem::Link`] with [`IconLink`] and action directly associated, or
 /// * a [`NavItem::Collapsible`] with one or more [`SubGroup`]s.
-/// 
+///
 /// Each [`SubGroup`]:
 /// * Optionally contains a header label.
 /// * Contains many [`PlainLink`]s.
@@ -69,6 +71,6 @@ pub struct SubGroup {
 #[template(path = "sidebar.html")]
 pub struct Sidebar {
     pub name: Cow<'static, str>,
-    pub logo: Cow<'static, str>,
+    pub logo: Icon,
     pub groups: Vec<Group>,
 }

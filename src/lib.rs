@@ -6,11 +6,13 @@ use askama::Template;
 mod alerts;
 mod color;
 pub mod files;
+mod fontawesome;
 mod sidebar;
 mod userinfo;
 
 pub use alerts::*;
 pub use color::*;
+pub use fontawesome::*;
 pub use sidebar::*;
 pub use userinfo::*;
 
@@ -62,7 +64,7 @@ pub struct PlainLink {
 /// A link with an associated Font-Awesome icon.
 pub struct IconLink {
     pub label: Cow<'static, str>,
-    pub icon: Cow<'static, str>,
+    pub icon: Icon,
     pub active: bool,
     pub action: LinkAction,
 }

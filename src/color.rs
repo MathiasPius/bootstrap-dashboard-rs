@@ -1,4 +1,3 @@
-
 /// One of the [Bootstrap-defined colors](https://getbootstrap.com/docs/4.6/utilities/colors/).
 pub enum Color {
     Primary,

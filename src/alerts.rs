@@ -2,6 +2,8 @@ use std::borrow::Cow;
 
 use askama::Template;
 
+use crate::Icon;
+
 use super::color::Color;
 
 /// Single Alert entry.
@@ -9,7 +11,7 @@ pub struct Alert {
     /// Coloring used for the background of the alert icon.
     pub color: Color,
     /// Font-Awesome Icon used for the alert.
-    pub icon: Cow<'static, str>,
+    pub icon: Icon,
     /// Typically the date and time of the alert.
     pub headline: String,
     /// Contents of the alert.
