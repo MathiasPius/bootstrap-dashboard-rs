@@ -134,9 +134,9 @@ impl IconLink {
 /// Renders to HTML.
 #[derive(Template)]
 #[template(path = "dashboard.html")]
-pub struct Dashboard<Content: Display> {
+pub struct Dashboard<Content: Display = &'static str> {
     /// Used for copyright notice.
-    pub copyright: &'static str,
+    pub copyright: Option<Cow<'static, str>>,
     /// Path where static resources for the dashboard are served.
     ///
     /// See [`files::serve_at`] for more information as well as an example
@@ -151,7 +151,55 @@ pub struct Dashboard<Content: Display> {
     pub content: Content,
 }
 
+impl Dashboard<&'static str> {
+    pub fn new<S1: Into<Cow<'static, str>>>(
+        title: S1,
+        static_path: &'static str,
+        sidebar: Sidebar,
+    ) -> Self {
+        Dashboard {
+            copyright: None,
+            static_path,
+            title: title.into(),
+            sidebar,
+            alerts: None,
+            userinfo: None,
+            content: "",
+        }
+    }
+}
+
 impl<Content: Display> Dashboard<Content> {
+    pub fn with_copyright<S: Into<Cow<'static, str>>>(mut self, copyright: S) -> Self {
+        self.copyright = Some(copyright.into());
+        self
+    }
+
+    pub fn with_alerts(mut self, alerts: Alerts) -> Self {
+        self.alerts = Some(alerts);
+        self
+    }
+
+    pub fn with_userinfo(mut self, userinfo: UserInfo) -> Self {
+        self.userinfo = Some(userinfo);
+        self
+    }
+
+    pub fn replace_content<NewContent: Display>(
+        self,
+        content: NewContent,
+    ) -> Dashboard<NewContent> {
+        Dashboard {
+            copyright: self.copyright,
+            static_path: self.static_path,
+            title: self.title,
+            sidebar: self.sidebar,
+            alerts: self.alerts,
+            userinfo: self.userinfo,
+            content,
+        }
+    }
+
     /// Sets the `active` field of the first [`IconLink`] or [`PlainLink`] whose
     /// label matches the provided `active_label`.
     ///
