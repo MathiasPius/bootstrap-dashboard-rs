@@ -159,3 +159,18 @@ pub struct Sidebar {
     pub logo: Icon,
     pub groups: Vec<Group>,
 }
+
+impl Sidebar {
+    pub fn new<S: Into<Cow<'static, str>>>(name: S, logo: Icon) -> Self {
+        Sidebar {
+            name: name.into(),
+            logo,
+            groups: Vec::new(),
+        }
+    }
+
+    pub fn with_group(mut self, group: Group) -> Self {
+        self.groups.push(group);
+        self
+    }
+}
