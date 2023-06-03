@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use askama::Template;
 
-use crate::Icon;
+use crate::{icons, Icon};
 
 use super::color::Color;
 
@@ -18,6 +18,33 @@ pub struct Alert {
     pub message: String,
     /// If set, will bold the `message` text.
     pub unread: bool,
+}
+
+impl Alert {
+    pub fn new<S1: AsRef<str>, S2: AsRef<str>>(headline: S1, message: S2) -> Self {
+        Alert {
+            headline: headline.as_ref().to_string(),
+            message: message.as_ref().to_string(),
+            color: Color::Warning,
+            icon: icons::fa::EXCLAMATION_CIRCLE,
+            unread: false,
+        }
+    }
+
+    pub fn with_icon(mut self, icon: Icon) -> Self {
+        self.icon = icon;
+        self
+    }
+
+    pub fn with_color(mut self, color: Color) -> Self {
+        self.color = color;
+        self
+    }
+
+    pub fn unread(mut self) -> Self {
+        self.unread = true;
+        self
+    }
 }
 
 /// List of Alerts

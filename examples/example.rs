@@ -100,20 +100,17 @@ fn dashboard_builder(content: &'static str) -> Dashboard<&'static str> {
         },
         alerts: Some(Alerts {
             alerts: vec![
-                Alert {
-                    color: Color::Primary,
-                    icon: icons::fa::MONEY_BILL,
-                    headline: "December 7, 1991".to_string(),
-                    message: "A new monthly report is ready to download!".to_string(),
-                    unread: true,
-                },
-                Alert {
-                    color: Color::Secondary,
-                    icon: icons::fa::DONATE,
-                    headline: "December 7, 1991".to_string(),
-                    message: "$290.29 has been deposited into your account!".to_string(),
-                    unread: false,
-                },
+                Alert::new(
+                    "December 7, 1991",
+                    "A new monthly report is ready to download!",
+                )
+                .unread(),
+                Alert::new(
+                    "$290.29 has been deposited into your account!",
+                    "A new monthly report is ready to download!",
+                )
+                .with_icon(icons::fa::DONATE)
+                .with_color(Color::Secondary),
             ],
             show_all_url: Some("/notifications".into()),
         }),
