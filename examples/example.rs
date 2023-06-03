@@ -1,4 +1,6 @@
 use axum::{
+    body::{self, Full},
+    http::{header, HeaderValue, Response, StatusCode},
     response::{Html, IntoResponse},
     routing::get,
     Router,
@@ -16,13 +18,29 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/", get(dashboard))
+        .route("/img/undraw_profile.svg", get(serve_profile_image))
         .merge(dashboard::files::serve_at("/static-path/*path"));
 
-    // run it with hyper on localhost:3000
+    
+    println!("Example running at http://localhost:3000");
+
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
+}
+
+async fn serve_profile_image() -> impl IntoResponse {
+    Response::builder()
+        .status(StatusCode::OK)
+        .header(
+            header::CONTENT_TYPE,
+            HeaderValue::from_str("image/svg+xml").unwrap(),
+        )
+        .body(Full::from(
+            include_bytes!("img/undraw_profile.svg").as_slice(),
+        ))
+        .unwrap()
 }
 
 async fn dashboard() -> impl IntoResponse {
@@ -34,44 +52,80 @@ async fn dashboard() -> impl IntoResponse {
             sidebar: Sidebar {
                 name: "Dashboard".into(),
                 logo: "fa-laugh-wink".into(),
-                groups: vec![Group {
-                    label: None,
-                    items: vec![NavItem::Link(IconLink {
-                        label: "Dashboard".into(),
-                        icon: "fa-tachometer-alt".into(),
-                        action: LinkAction::Href("/".into()),
-                        active: true,
-                    }),
-                    NavItem::Link(IconLink {
-                        label: "Configuration".into(),
-                        icon: "fa-cogs".into(),
-                        action: LinkAction::Href("/".into()),
-                        active: false,
-                    })],
-                },
-                Group {
-                    label: Some("Another Group".into()), items: vec![
-                        NavItem::Collapsible { label: "Collapsible".into(), icon: "fa-list".into(), subgroups: vec![
-                            SubGroup { label: None, links: vec![
-                                PlainLink { label: "Placeholders!".into(), active: false, action: LinkAction::Href("/".into()) },
-                            ] },
-                            SubGroup { label: Some("First Subgroup".into()), links: vec![
-                                PlainLink { label: "Lorem".into(), active: false, action: LinkAction::Href("/".into()) },
-                                PlainLink { label: "Ipsum".into(), active: false, action: LinkAction::Href("/".into()) },
-                            ] },
-                            SubGroup { label: Some("Second Subgroup".into()), links: vec![
-                                PlainLink { label: "Dolor".into(), active: false, action: LinkAction::Href("/".into()) },
-                                PlainLink { label: "Sit Amet".into(), active: false, action: LinkAction::Href("/".into()) },
-                            ] }
-                        ] },
-                        NavItem::Link(IconLink {
-                            label: "Plain Link".into(),
-                            icon: "fa-bell".into(),
-                            action: LinkAction::Href("/".into()),
-                            active: false,
-                        })
-                    ]
-                }],
+                groups: vec![
+                    Group {
+                        label: None,
+                        items: vec![
+                            NavItem::Link(IconLink {
+                                label: "Dashboard".into(),
+                                icon: "fa-tachometer-alt".into(),
+                                action: LinkAction::Href("/".into()),
+                                active: true,
+                            }),
+                            NavItem::Link(IconLink {
+                                label: "Configuration".into(),
+                                icon: "fa-cogs".into(),
+                                action: LinkAction::Href("/".into()),
+                                active: false,
+                            }),
+                        ],
+                    },
+                    Group {
+                        label: Some("Another Group".into()),
+                        items: vec![
+                            NavItem::Collapsible {
+                                label: "Collapsible".into(),
+                                icon: "fa-list".into(),
+                                subgroups: vec![
+                                    SubGroup {
+                                        label: None,
+                                        links: vec![PlainLink {
+                                            label: "Placeholders!".into(),
+                                            active: false,
+                                            action: LinkAction::Href("/".into()),
+                                        }],
+                                    },
+                                    SubGroup {
+                                        label: Some("First Subgroup".into()),
+                                        links: vec![
+                                            PlainLink {
+                                                label: "Lorem".into(),
+                                                active: false,
+                                                action: LinkAction::Href("/".into()),
+                                            },
+                                            PlainLink {
+                                                label: "Ipsum".into(),
+                                                active: false,
+                                                action: LinkAction::Href("/".into()),
+                                            },
+                                        ],
+                                    },
+                                    SubGroup {
+                                        label: Some("Second Subgroup".into()),
+                                        links: vec![
+                                            PlainLink {
+                                                label: "Dolor".into(),
+                                                active: false,
+                                                action: LinkAction::Href("/".into()),
+                                            },
+                                            PlainLink {
+                                                label: "Sit Amet".into(),
+                                                active: false,
+                                                action: LinkAction::Href("/".into()),
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            NavItem::Link(IconLink {
+                                label: "Plain Link".into(),
+                                icon: "fa-bell".into(),
+                                action: LinkAction::Href("/".into()),
+                                active: false,
+                            }),
+                        ],
+                    },
+                ],
             },
             alerts: Some(Alerts {
                 alerts: vec![
@@ -94,19 +148,37 @@ async fn dashboard() -> impl IntoResponse {
             }),
             userinfo: Some(UserInfo {
                 username: "John Smith".into(),
-                image: "https://startbootstrap.github.io/startbootstrap-sb-admin-2/img/undraw_profile.svg".into(),
+                image: "/img/undraw_profile.svg".into(),
                 groups: vec![
                     vec![
-                        IconLink { label: "Profile".into(), icon: "fa-user".into(), action: LinkAction::Href("/".into()), active: false },
-                        IconLink { label: "Settings".into(), icon: "fa-cogs".into(), action: LinkAction::Href("/".into()), active: false },
-                        IconLink { label: "Activity Log".into(), icon: "fa-list".into(), action: LinkAction::Href("/".into()), active: false },
+                        IconLink {
+                            label: "Profile".into(),
+                            icon: "fa-user".into(),
+                            action: LinkAction::Href("/".into()),
+                            active: false,
+                        },
+                        IconLink {
+                            label: "Settings".into(),
+                            icon: "fa-cogs".into(),
+                            action: LinkAction::Href("/".into()),
+                            active: false,
+                        },
+                        IconLink {
+                            label: "Activity Log".into(),
+                            icon: "fa-list".into(),
+                            action: LinkAction::Href("/".into()),
+                            active: false,
+                        },
                     ],
-                    vec![
-                        IconLink { label: "Logout".into(), icon: "fa-sign-out-alt".into(), action: LinkAction::ToggleModal("logoutModal".into()), active: false }
-                    ]
+                    vec![IconLink {
+                        label: "Logout".into(),
+                        icon: "fa-sign-out-alt".into(),
+                        action: LinkAction::ToggleModal("logoutModal".into()),
+                        active: false,
+                    }],
                 ],
             }),
-            content: "Hello world!"
+            content: "Hello world!",
         }
         .render()
         .unwrap(),
