@@ -6,8 +6,8 @@ use axum::{
     Router,
 };
 use bootstrap_dashboard::{
-    Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink, Sidebar,
-    SubGroup, UserInfo, icons,
+    icons, Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink,
+    Sidebar, SubGroup, UserInfo,
 };
 
 #[tokio::main]
@@ -49,78 +49,39 @@ async fn dashboard() -> impl IntoResponse {
                 name: "Dashboard".into(),
                 logo: icons::fa::LAUGH_SQUINT,
                 groups: vec![
-                    Group {
-                        label: None,
-                        items: vec![
-                            NavItem::Link(IconLink {
-                                label: "Dashboard".into(),
-                                icon: icons::fa::TACHOMETER_ALT,
-                                action: LinkAction::Href("/".into()),
-                                active: true,
-                            }),
-                            NavItem::Link(IconLink {
-                                label: "Configuration".into(),
-                                icon: icons::fa::COGS,
-                                action: LinkAction::Href("/".into()),
-                                active: false,
-                            }),
-                        ],
-                    },
-                    Group {
-                        label: Some("Another Group".into()),
-                        items: vec![
-                            NavItem::Collapsible {
-                                label: "Collapsible".into(),
-                                icon: icons::fa::LIST,
-                                subgroups: vec![
-                                    SubGroup {
-                                        label: None,
-                                        links: vec![PlainLink {
-                                            label: "Placeholders!".into(),
-                                            active: false,
-                                            action: LinkAction::Href("/".into()),
-                                        }],
-                                    },
-                                    SubGroup {
-                                        label: Some("First Subgroup".into()),
-                                        links: vec![
-                                            PlainLink {
-                                                label: "Lorem".into(),
-                                                active: false,
-                                                action: LinkAction::Href("/".into()),
-                                            },
-                                            PlainLink {
-                                                label: "Ipsum".into(),
-                                                active: false,
-                                                action: LinkAction::Href("/".into()),
-                                            },
-                                        ],
-                                    },
-                                    SubGroup {
-                                        label: Some("Second Subgroup".into()),
-                                        links: vec![
-                                            PlainLink {
-                                                label: "Dolor".into(),
-                                                active: false,
-                                                action: LinkAction::Href("/".into()),
-                                            },
-                                            PlainLink {
-                                                label: "Sit Amet".into(),
-                                                active: false,
-                                                action: LinkAction::Href("/".into()),
-                                            },
-                                        ],
-                                    },
-                                ],
-                            },
-                            NavItem::Link(IconLink {
-                                label: "Plain Link".into(),
-                                icon: icons::fa::BELL,
-                                action: LinkAction::Href("/".into()),
-                                active: false,
-                            }),
-                        ],
-                    },
+                    Group::unlabeled()
+                        .with_item(IconLink::new(
+                            "Dashboard",
+                            icons::fa::TACHOMETER_ALT,
+                            LinkAction::to("/"),
+                        ))
+                        .with_item(IconLink::new(
+                            "Configuration",
+                            icons::fa::COGS,
+                            LinkAction::to("/"),
+                        )),
+                    Group::new("Another Group")
+                        .with_item(NavItem::collapsible(
+                            "Collapsible",
+                            icons::fa::LIST,
+                            vec![
+                                SubGroup::unlabeled().with_link(PlainLink::new(
+                                    "Placeholders!",
+                                    LinkAction::to("/"),
+                                )),
+                                SubGroup::new("First Subgroup")
+                                    .with_link(PlainLink::new("Lorem", LinkAction::to("/")))
+                                    .with_link(PlainLink::new("Ipsum", LinkAction::to("/"))),
+                                SubGroup::new("Second Subgroup")
+                                    .with_link(PlainLink::new("Dolor", LinkAction::to("/")))
+                                    .with_link(PlainLink::new("Sit Amet", LinkAction::to("/"))),
+                            ],
+                        ))
+                        .with_item(IconLink::new(
+                            "Plain Link",
+                            icons::fa::BELL,
+                            LinkAction::to("/"),
+                        )),
                 ],
             },
             alerts: Some(Alerts {
@@ -147,31 +108,16 @@ async fn dashboard() -> impl IntoResponse {
                 image: "/img/undraw_profile.svg".into(),
                 groups: vec![
                     vec![
-                        IconLink {
-                            label: "Profile".into(),
-                            icon: icons::fa::USER,
-                            action: LinkAction::Href("/".into()),
-                            active: false,
-                        },
-                        IconLink {
-                            label: "Settings".into(),
-                            icon: icons::fa::COGS,
-                            action: LinkAction::Href("/".into()),
-                            active: false,
-                        },
-                        IconLink {
-                            label: "Activity Log".into(),
-                            icon: icons::fa::LIST,
-                            action: LinkAction::Href("/".into()),
-                            active: false,
-                        },
+                        IconLink::new("Profile", icons::fa::USER, LinkAction::to("/")).into(),
+                        IconLink::new("Settings", icons::fa::COGS, LinkAction::to("/")).into(),
+                        IconLink::new("Activity Log", icons::fa::LIST, LinkAction::to("/")).into(),
                     ],
-                    vec![IconLink {
-                        label: "Logout".into(),
-                        icon: icons::fa::SIGN_OUT_ALT,
-                        action: LinkAction::ToggleModal("logoutModal".into()),
-                        active: false,
-                    }],
+                    vec![IconLink::new(
+                        "Logout",
+                        icons::fa::SIGN_OUT_ALT,
+                        LinkAction::modal("logoutModal"),
+                    )
+                    .into()],
                 ],
             }),
             content: "Hello world!",

@@ -57,7 +57,7 @@ mod axum_files {
     ///
     /// let app = Router::new()
     ///     .route("/", get(my_front_page))
-    ///     .merge(dashboard::files::serve_at("/static/*path"));
+    ///     .merge(bootstrap_dashboard::files::serve_at("/static/*path"));
     ///
     /// async fn my_front_page() -> impl IntoResponse {
     ///     "Hello world!"

@@ -15,6 +15,47 @@ pub struct Group {
     pub items: Vec<NavItem>,
 }
 
+impl Group {
+    pub fn unlabeled() -> Self {
+        Group {
+            label: None,
+            items: Vec::new(),
+        }
+    }
+
+    pub fn new<S: Into<Cow<'static, str>>>(label: S) -> Self {
+        Group {
+            label: Some(label.into()),
+            items: Vec::new(),
+        }
+    }
+
+    pub fn with_label<S: Into<Cow<'static, str>>>(self, label: S) -> Self {
+        Group {
+            label: Some(label.into()),
+            items: self.items,
+        }
+    }
+
+    pub fn with_item<I: Into<NavItem>>(mut self, item: I) -> Self {
+        self.items.push(item.into());
+
+        Group {
+            label: self.label,
+            items: self.items,
+        }
+    }
+}
+
+impl From<Vec<NavItem>> for Group {
+    fn from(value: Vec<NavItem>) -> Self {
+        Group {
+            label: None,
+            items: value,
+        }
+    }
+}
+
 /// Top-level sidebar menu item containing either a direct link/modal toggle,
 /// or a collapsible menu item with further sub-groups of links.
 pub enum NavItem {
@@ -32,6 +73,26 @@ pub enum NavItem {
 }
 
 impl NavItem {
+    pub fn collapsible<S: Into<Cow<'static, str>>>(
+        label: S,
+        icon: Icon,
+        subgroups: Vec<SubGroup>,
+    ) -> Self {
+        NavItem::Collapsible {
+            label: label.into(),
+            icon,
+            subgroups,
+        }
+    }
+}
+
+impl From<IconLink> for NavItem {
+    fn from(value: IconLink) -> Self {
+        NavItem::Link(value)
+    }
+}
+
+impl NavItem {
     /// Get the label for the [`NavItem`]
     pub fn label(&self) -> &Cow<'static, str> {
         match self {
@@ -45,6 +106,30 @@ impl NavItem {
 pub struct SubGroup {
     pub label: Option<Cow<'static, str>>,
     pub links: Vec<PlainLink>,
+}
+
+impl SubGroup {
+    pub fn new<S: Into<Cow<'static, str>>>(label: S) -> SubGroup {
+        SubGroup {
+            label: Some(label.into()),
+            links: Vec::new(),
+        }
+    }
+
+    pub fn unlabeled() -> Self {
+        SubGroup {
+            label: None,
+            links: Vec::new(),
+        }
+    }
+
+    pub fn with_link(mut self, link: PlainLink) -> Self {
+        self.links.push(link);
+        SubGroup {
+            label: self.label,
+            links: self.links,
+        }
+    }
 }
 
 /// Dashboard logo and title as well as left-hand side menu.
