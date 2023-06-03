@@ -1,14 +1,18 @@
 use std::{borrow::Cow, fmt::Display};
 
-pub use askama::Template;
+pub use askama;
+use askama::Template;
 
-use self::{alerts::Alerts, sidebar::Sidebar, userinfo::UserInfo};
-
-pub mod alerts;
-pub mod color;
+mod alerts;
+mod color;
 pub mod files;
-pub mod sidebar;
-pub mod userinfo;
+mod sidebar;
+mod userinfo;
+
+pub use alerts::*;
+pub use color::*;
+pub use sidebar::*;
+pub use userinfo::*;
 
 /// Action to take on link press.
 ///

@@ -6,11 +6,8 @@ use axum::{
     Router,
 };
 use dashboard::{
-    alerts::{Alert, Alerts},
-    color::Color,
-    sidebar::{Group, NavItem, Sidebar, SubGroup},
-    userinfo::UserInfo,
-    Dashboard, IconLink, LinkAction, PlainLink, Template,
+    Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink, Sidebar,
+    SubGroup, Template, UserInfo,
 };
 
 #[tokio::main]
@@ -130,20 +127,20 @@ async fn dashboard() -> impl IntoResponse {
                 alerts: vec![
                     Alert {
                         color: Color::Primary,
-                        icon: "fa-donate",
+                        icon: "fa-donate".into(),
                         headline: "December 7, 1991".to_string(),
                         message: "A new monthly report is ready to download!".to_string(),
                         unread: true,
                     },
                     Alert {
                         color: Color::Secondary,
-                        icon: "fa-donate",
+                        icon: "fa-donate".into(),
                         headline: "December 7, 1991".to_string(),
                         message: "$290.29 has been deposited into your account!".to_string(),
                         unread: false,
                     },
                 ],
-                show_all_url: Some("/notifications"),
+                show_all_url: Some("/notifications".into()),
             }),
             userinfo: Some(UserInfo {
                 username: "John Smith".into(),
