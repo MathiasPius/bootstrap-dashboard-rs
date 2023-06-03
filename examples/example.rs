@@ -8,7 +8,7 @@ use dashboard::{
     color::Color,
     sidebar::{Group, NavItem, Sidebar, SubGroup},
     userinfo::UserInfo,
-    BasicLink, Dashboard, IconLink, LinkAction, Template,
+    Dashboard, IconLink, LinkAction, PlainLink, Template,
 };
 
 #[tokio::main]
@@ -53,15 +53,15 @@ async fn dashboard() -> impl IntoResponse {
                     label: Some("Another Group".into()), items: vec![
                         NavItem::Collapsible { label: "Collapsible".into(), icon: "fa-list".into(), subgroups: vec![
                             SubGroup { label: None, links: vec![
-                                BasicLink { label: "Placeholders!".into(), active: false, action: LinkAction::Href("/".into()) },
+                                PlainLink { label: "Placeholders!".into(), active: false, action: LinkAction::Href("/".into()) },
                             ] },
                             SubGroup { label: Some("First Subgroup".into()), links: vec![
-                                BasicLink { label: "Lorem".into(), active: false, action: LinkAction::Href("/".into()) },
-                                BasicLink { label: "Ipsum".into(), active: false, action: LinkAction::Href("/".into()) },
+                                PlainLink { label: "Lorem".into(), active: false, action: LinkAction::Href("/".into()) },
+                                PlainLink { label: "Ipsum".into(), active: false, action: LinkAction::Href("/".into()) },
                             ] },
                             SubGroup { label: Some("Second Subgroup".into()), links: vec![
-                                BasicLink { label: "Dolor".into(), active: false, action: LinkAction::Href("/".into()) },
-                                BasicLink { label: "Sit Amet".into(), active: false, action: LinkAction::Href("/".into()) },
+                                PlainLink { label: "Dolor".into(), active: false, action: LinkAction::Href("/".into()) },
+                                PlainLink { label: "Sit Amet".into(), active: false, action: LinkAction::Href("/".into()) },
                             ] }
                         ] },
                         NavItem::Link(IconLink {
@@ -73,7 +73,7 @@ async fn dashboard() -> impl IntoResponse {
                     ]
                 }],
             },
-            alerts: Alerts {
+            alerts: Some(Alerts {
                 alerts: vec![
                     Alert {
                         color: Color::Primary,
@@ -91,8 +91,8 @@ async fn dashboard() -> impl IntoResponse {
                     },
                 ],
                 show_all_url: Some("/notifications"),
-            },
-            userinfo: UserInfo {
+            }),
+            userinfo: Some(UserInfo {
                 username: "John Smith".into(),
                 image: "https://startbootstrap.github.io/startbootstrap-sb-admin-2/img/undraw_profile.svg".into(),
                 groups: vec![
@@ -102,10 +102,10 @@ async fn dashboard() -> impl IntoResponse {
                         IconLink { label: "Activity Log".into(), icon: "fa-list".into(), action: LinkAction::Href("/".into()), active: false },
                     ],
                     vec![
-                        IconLink { label: "Logout".into(), icon: "fa-sign-out-alt".into(), action: LinkAction::Modal("logoutModal".into()), active: false }
+                        IconLink { label: "Logout".into(), icon: "fa-sign-out-alt".into(), action: LinkAction::ToggleModal("logoutModal".into()), active: false }
                     ]
                 ],
-            },
+            }),
             content: "Hello world!"
         }
         .render()

@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use askama::Template;
 
-use super::{BasicLink, IconLink};
+use super::{IconLink, PlainLink};
 
 pub struct Group {
     pub label: Option<Cow<'static, str>>,
@@ -29,7 +29,7 @@ impl NavItem {
 
 pub struct SubGroup {
     pub label: Option<Cow<'static, str>>,
-    pub links: Vec<BasicLink>,
+    pub links: Vec<PlainLink>,
 }
 
 #[derive(Template)]

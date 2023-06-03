@@ -33,25 +33,36 @@
             <!-- Main Content -->
             <div id="content">
 
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                {% if alerts.is_some() || userinfo.is_some() %}
+                    <!-- Topbar -->
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
 
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        {{ alerts|safe }}
-                        
-                        <div class="topbar-divider d-none d-sm-block"></div>
-                        
-                        {{ userinfo|safe }}
-
-                    </ul>
-                </nav>
-                <!-- End of Topbar -->
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            {% match alerts %}
+                                {% when Some with (alerts) %}
+                                    {{ alerts|safe }}
+                                {% when None %}
+                            {% endmatch %}
+                            
+                            {% if alerts.is_some() && userinfo.is_some() %}
+                                <div class="topbar-divider d-none d-sm-block"></div>
+                            {% endif %}
+                            
+                            {% match userinfo %}
+                                {% when Some with (userinfo) %}
+                                    {{ userinfo|safe }}
+                                {% when None %}
+                            {% endmatch %}
+                        </ul>
+                    </nav>
+                    <!-- End of Topbar -->
+                {% endif %}
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
