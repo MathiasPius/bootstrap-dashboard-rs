@@ -2,7 +2,7 @@ use std::{borrow::Cow, collections::HashSet, fmt::Display};
 
 use askama::Template;
 
-use crate::grid::{Column, ColumnSize, Breakpoint, ColumnWidth};
+use crate::grid::{Breakpoint, Column, ColumnSize, ColumnWidth};
 
 #[derive(Template)]
 #[template(path = "card.html")]
@@ -26,8 +26,13 @@ impl<Content: Display> Card<Content> {
         self
     }
 
-    pub fn with_size<Width: Into<ColumnWidth>>(mut self, breakpoint: Breakpoint, width: Width) -> Self {
-        self.widths.insert(ColumnSize::new(breakpoint, width.into()));
+    pub fn with_size<Width: Into<ColumnWidth>>(
+        mut self,
+        breakpoint: Breakpoint,
+        width: Width,
+    ) -> Self {
+        self.widths
+            .insert(ColumnSize::new(breakpoint, width.into()));
         self
     }
 }
