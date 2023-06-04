@@ -7,7 +7,7 @@ use axum::{
 };
 use bootstrap_dashboard::{
     card::Card,
-    grid::{Breakpoint, Row},
+    grid::{Breakpoint, Column, Row},
     icons, Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink,
     Sidebar, SubGroup, UserInfo,
 };
@@ -19,7 +19,9 @@ async fn main() {
         .route("/", get(index))
         .route("/configuration", get(configuration))
         .route("/img/undraw_profile.svg", get(serve_profile_image))
-        .merge(bootstrap_dashboard::files::serve_at("/static-path/nested/*path"));
+        .merge(bootstrap_dashboard::files::serve_at(
+            "/static-path/nested/*path",
+        ));
 
     println!("Example running at http://localhost:3000");
 
@@ -54,17 +56,23 @@ async fn configuration() -> impl IntoResponse {
     let row1 = Row::new()
         .add_column(
             Card::new("Hello world")
-                .with_header("First card"),
+                .with_header("First card")
+                .to_string(),
         )
         .add_column(
-            Card::new("Hello world")
-                .with_header("Small Card")
-                .with_size(Breakpoint::ExtraLarge, 2),
+            Column::new(
+                Card::new("Hello world")
+                    .to_string(),
+            )
+            .with_size(Breakpoint::ExtraLarge, 2),
         )
         .add_column(
-            Card::new("Hello world")
-                .with_header("Large Card")
-                .with_size(Breakpoint::ExtraLarge, 7),
+            Column::new(
+                Card::new("Hello world")
+                    .with_header("Large Card")
+                    .to_string(),
+            )
+            .with_size(Breakpoint::ExtraLarge, 7),
         );
 
     Html(

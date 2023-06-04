@@ -1,7 +1,5 @@
 <div class="row">
     {% for column in self.0 %}
-        <div class="{{ column.column_classes()|safe }} mb-4">
-            {{ column|safe }}
-        </div>
+        {{ column|safe }}
     {% endfor %}
 </div>

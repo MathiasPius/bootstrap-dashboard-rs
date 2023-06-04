@@ -1,0 +1,3 @@
+<div class="{% if !sizes.is_empty() %}{% for size in sizes %}{{ size }}{% endfor %}{% else %}col{% endif %} mb-4">
+    {{ content|safe }}
+</div>

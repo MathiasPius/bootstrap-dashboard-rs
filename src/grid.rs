@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fmt::Display, hash::Hash};
+use std::{borrow::Cow, collections::HashSet, fmt::Display, hash::Hash};
 
 use askama::Template;
 
@@ -93,33 +93,48 @@ impl Display for ColumnSize {
     }
 }
 
-pub trait Column: Display {
-    fn columns(&self) -> &HashSet<ColumnSize>;
+#[derive(Template)]
+#[template(path = "column.html")]
+pub struct Column {
+    sizes: HashSet<ColumnSize>,
+    content: Cow<'static, str>,
+}
 
-    fn column_classes(&self) -> String {
-        if self.columns().is_empty() {
-            String::from("col")
-        } else {
-            self.columns()
-                .iter()
-                .map(ToString::to_string)
-                .collect::<Vec<_>>()
-                .join(" ")
+impl Column {
+    pub fn new<Content: Into<Cow<'static, str>>>(content: Content) -> Column {
+        Column {
+            sizes: HashSet::new(),
+            content: content.into(),
         }
+    }
+
+    pub fn with_size<Width: Into<ColumnWidth>>(
+        mut self,
+        breakpoint: Breakpoint,
+        width: Width,
+    ) -> Self {
+        self.sizes.insert(ColumnSize::new(breakpoint, width.into()));
+        self
+    }
+}
+
+impl<T: Into<Cow<'static, str>>> From<T> for Column {
+    fn from(value: T) -> Self {
+        Column::new(value)
     }
 }
 
 #[derive(Template)]
 #[template(path = "row.html")]
-pub struct Row(Vec<Box<dyn Column>>);
+pub struct Row(Vec<Column>);
 
 impl<'row> Row {
     pub fn new() -> Self {
         Row(Vec::new())
     }
 
-    pub fn add_column<C: Column + 'static>(mut self, column: C) -> Self {
-        self.0.push(Box::new(column));
+    pub fn add_column<C: Into<Column>>(mut self, column: C) -> Self {
+        self.0.push(column.into());
         self
     }
 }
