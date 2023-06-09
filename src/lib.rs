@@ -14,12 +14,14 @@ mod color;
 pub mod files;
 pub mod grid;
 pub mod icons;
+mod page_header;
 mod sidebar;
 mod userinfo;
 
 pub use alerts::*;
 pub use color::*;
 pub use icons::Icon;
+pub use page_header::PageHeader;
 pub use sidebar::*;
 pub use userinfo::*;
 
@@ -131,41 +133,68 @@ impl IconLink {
     }
 }
 
-/// Complete Dashboard definition.
+/// Base template upon which all other types must be embedded.
 ///
-/// Renders to HTML.
+/// Structures the page and includes necessary css and javascript files.
+#[derive(Template)]
+#[template(path = "page.html")]
+pub struct Page<Content: Display = &'static str> {
+    pub title: Cow<'static, str>,
+    /// Path where static resources for the dashboard are served.
+    ///
+    /// See [`files::serve_at`] for more information as well as an example
+    /// of how this could be done using [axum](https://github.com/tokio-rs/axum)
+    pub static_path: Cow<'static, str>,
+    pub content: Content,
+}
+
+impl Page<&'static str> {
+    pub fn new<S1: Into<Cow<'static, str>>, S2: Into<Cow<'static, str>>>(
+        title: S1,
+        static_path: S2,
+    ) -> Self {
+        Page {
+            title: title.into(),
+            static_path: static_path.into(),
+            content: "",
+        }
+    }
+}
+
+impl<Content: Display> Page<Content> {
+    pub fn with_content<NewContent: Display>(self, content: NewContent) -> Page<NewContent> {
+        Page {
+            title: self.title,
+            static_path: self.static_path,
+            content,
+        }
+    }
+}
+
+/// Dashboard definition.
+///
+/// Embed within a [`Page`] before rendering.
 #[derive(Template)]
 #[template(path = "dashboard.html")]
 pub struct Dashboard<Content: Display = &'static str> {
     /// Used for copyright notice.
     pub copyright: Option<Cow<'static, str>>,
-    /// Path where static resources for the dashboard are served.
-    ///
-    /// See [`files::serve_at`] for more information as well as an example
-    /// of how this could be done using [axum](https://github.com/tokio-rs/axum)
-    pub static_path: &'static str,
-    /// Title of the web page.
-    pub title: Cow<'static, str>,
     /// [`Sidebar`] structure defining the layout of the left-hand menu.
     pub sidebar: Sidebar,
     pub alerts: Option<Alerts>,
     pub userinfo: Option<UserInfo>,
+    pub page_header: Option<PageHeader>,
     pub content: Content,
 }
 
 impl Dashboard<&'static str> {
-    pub fn new<S1: Into<Cow<'static, str>>>(
-        title: S1,
-        static_path: &'static str,
-        sidebar: Sidebar,
-    ) -> Self {
+    pub fn new(sidebar: Sidebar) -> Self {
         Dashboard {
             copyright: None,
-            static_path,
-            title: title.into(),
             sidebar,
             alerts: None,
             userinfo: None,
+            page_header: None,
             content: "",
         }
     }
@@ -187,17 +216,21 @@ impl<Content: Display> Dashboard<Content> {
         self
     }
 
+    pub fn with_page_header<P: Into<PageHeader>>(mut self, page_header: P) -> Self {
+        self.page_header = Some(page_header.into());
+        self
+    }
+
     pub fn replace_content<NewContent: Display>(
         self,
         content: NewContent,
     ) -> Dashboard<NewContent> {
         Dashboard {
             copyright: self.copyright,
-            static_path: self.static_path,
-            title: self.title,
             sidebar: self.sidebar,
             alerts: self.alerts,
             userinfo: self.userinfo,
+            page_header: self.page_header,
             content,
         }
     }

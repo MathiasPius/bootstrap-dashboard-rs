@@ -1,0 +1,8 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">{{ label }}</h1>
+    {% for link in links %}
+        <a href="{{ link.action.href() }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas {{ link.icon }} fa-sm text-white-50"></i> {{ link.label }}
+        </a>
+    {% endfor %}
+</div>

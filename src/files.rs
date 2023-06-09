@@ -68,7 +68,7 @@ mod axum_files {
     /// match the one provided in the [`Dashboard`](crate::Dashboard) `static_path`
     /// variable since it is used when rendering the relative paths of the
     /// css and js files used in the dashboard.
-    pub fn serve_at(path: &'static str) -> Router {
+    pub fn serve_at<S: Clone + Send + Sync + 'static>(path: &'static str) -> Router<S> {
         Router::new().route(path, get(static_path))
     }
 }

@@ -7,6 +7,6 @@
         {% when None %}
     {% endmatch %}
     <div class="card-body">
-        {{ content }}
+        {{ content|safe }}
     </div>
 </div>

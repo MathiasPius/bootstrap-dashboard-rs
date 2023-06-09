@@ -4,7 +4,7 @@ use axum::{
     Router,
 };
 use bootstrap_dashboard::{
-    icons, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink, Sidebar, SubGroup,
+    icons, Dashboard, Group, IconLink, LinkAction, NavItem, Page, PlainLink, Sidebar, SubGroup,
 };
 
 #[tokio::main]
@@ -25,18 +25,24 @@ async fn main() {
 
 async fn index() -> impl IntoResponse {
     Html(
-        dashboard_builder()
-            .with_active_label("Dashboard")
-            .replace_content("This is the front page!")
+        Page::new("Front Page", "/static-path")
+            .with_content(
+                dashboard_builder()
+                    .with_active_label("Dashboard")
+                    .replace_content("This is the front page!"),
+            )
             .to_string(),
     )
 }
 
 async fn configuration() -> impl IntoResponse {
     Html(
-        dashboard_builder()
-            .with_active_label("Configuration")
-            .replace_content("This is the configuration page!")
+        Page::new("Configuration Page", "/static-path")
+            .with_content(
+                dashboard_builder()
+                    .with_active_label("Configuration")
+                    .replace_content("This is the configuration page!"),
+            )
             .to_string(),
     )
 }
@@ -80,5 +86,5 @@ fn dashboard_builder() -> Dashboard {
         ],
     };
 
-    Dashboard::new("My First Dashboard", "/static-path", sidebar)
+    Dashboard::new(sidebar)
 }

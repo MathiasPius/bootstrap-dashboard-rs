@@ -8,7 +8,7 @@ use axum::{
 use bootstrap_dashboard::{
     card::Card,
     grid::{Breakpoint, Column, Row},
-    icons, Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, PlainLink,
+    icons, Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, Page, PlainLink,
     Sidebar, SubGroup, UserInfo,
 };
 
@@ -43,11 +43,15 @@ async fn serve_profile_image() -> impl IntoResponse {
         ))
         .unwrap()
 }
+
 async fn index() -> impl IntoResponse {
     Html(
-        dashboard_builder()
-            .with_active_label("Dashboard")
-            .replace_content("This is the front page!")
+        Page::new("Dashboard", "/static-path/nested")
+            .with_content(
+                dashboard_builder()
+                    .with_active_label("Dashboard")
+                    .replace_content("This is the front page!"),
+            )
             .to_string(),
     )
 }
@@ -60,11 +64,7 @@ async fn configuration() -> impl IntoResponse {
                 .to_string(),
         )
         .add_column(
-            Column::new(
-                Card::new("Hello world")
-                    .to_string(),
-            )
-            .with_size(Breakpoint::ExtraLarge, 2),
+            Column::new(Card::new("Hello world").to_string()).with_size(Breakpoint::ExtraLarge, 2),
         )
         .add_column(
             Column::new(
@@ -76,9 +76,12 @@ async fn configuration() -> impl IntoResponse {
         );
 
     Html(
-        dashboard_builder()
-            .with_active_label("Configuration")
-            .replace_content(row1)
+        Page::new("My First Dashbaord", "/static-path/nested")
+            .with_content(
+                dashboard_builder()
+                    .with_active_label("Configuration")
+                    .replace_content(row1),
+            )
             .to_string(),
     )
 }
@@ -156,7 +159,7 @@ fn dashboard_builder() -> Dashboard {
         ],
     };
 
-    Dashboard::new("My First Dashboard", "/static-path/nested", sidebar)
+    Dashboard::new(sidebar)
         .with_copyright("Bootstrap Dashboard")
         .with_alerts(alerts)
         .with_userinfo(userinfo)
