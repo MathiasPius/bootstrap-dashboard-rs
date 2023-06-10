@@ -58,15 +58,15 @@ async fn index() -> impl IntoResponse {
 
 async fn configuration() -> impl IntoResponse {
     let row1 = Row::new()
-        .add_column(
+        .with_column(
             Card::new("Hello world")
                 .with_header("First card")
                 .to_string(),
         )
-        .add_column(
+        .with_column(
             Column::new(Card::new("Hello world").to_string()).with_size(Breakpoint::ExtraLarge, 2),
         )
-        .add_column(
+        .with_column(
             Column::new(
                 Card::new("Hello world")
                     .with_header("Large Card")

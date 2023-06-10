@@ -133,7 +133,7 @@ impl<'row> Row {
         Row(Vec::new())
     }
 
-    pub fn add_column<C: Into<Column>>(mut self, column: C) -> Self {
+    pub fn with_column<C: Into<Column>>(mut self, column: C) -> Self {
         self.0.push(column.into());
         self
     }
