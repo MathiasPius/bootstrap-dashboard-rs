@@ -1,5 +1,5 @@
 use axum::{
-    body::Full,
+    body::Body,
     http::{header, HeaderValue, Response, StatusCode},
     response::{Html, IntoResponse},
     routing::get,
@@ -11,6 +11,7 @@ use bootstrap_dashboard::{
     icons, Alert, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, Page, PlainLink,
     Sidebar, SubGroup, UserInfo,
 };
+use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
@@ -25,8 +26,9 @@ async fn main() {
 
     println!("Example running at http://localhost:3000");
 
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
+    let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();
+
+    axum::serve(listener, app.into_make_service())
         .await
         .unwrap();
 }
@@ -38,7 +40,7 @@ async fn serve_profile_image() -> impl IntoResponse {
             header::CONTENT_TYPE,
             HeaderValue::from_str("image/svg+xml").unwrap(),
         )
-        .body(Full::from(
+        .body(Body::from(
             include_bytes!("img/undraw_profile.svg").as_slice(),
         ))
         .unwrap()
@@ -50,6 +52,7 @@ async fn index() -> impl IntoResponse {
             .with_content(
                 dashboard_builder()
                     .with_active_label("Dashboard")
+                    .with_page_header("Dashboard")
                     .replace_content("This is the front page!"),
             )
             .to_string(),
@@ -80,6 +83,7 @@ async fn configuration() -> impl IntoResponse {
             .with_content(
                 dashboard_builder()
                     .with_active_label("Configuration")
+                    .with_page_header("Configuration")
                     .replace_content(row1),
             )
             .to_string(),

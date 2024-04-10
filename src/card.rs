@@ -40,6 +40,12 @@ impl ContextGroup {
     }
 }
 
+impl Default for ContextGroup {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<Content: Display> Card<Content> {
     pub fn new(content: Content) -> Self {
         Card {

@@ -128,7 +128,7 @@ impl<T: Into<Cow<'static, str>>> From<T> for Column {
 #[template(path = "row.html")]
 pub struct Row(Vec<Column>);
 
-impl<'row> Row {
+impl Row {
     pub fn new() -> Self {
         Row(Vec::new())
     }
@@ -136,5 +136,11 @@ impl<'row> Row {
     pub fn with_column<C: Into<Column>>(mut self, column: C) -> Self {
         self.0.push(column.into());
         self
+    }
+}
+
+impl Default for Row {
+    fn default() -> Self {
+        Self::new()
     }
 }

@@ -12,6 +12,13 @@
                 <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                     <i class="fa fa-bars"></i>
                 </button>
+
+                {% match page_header %}
+                {% when Some with (page_header) %}
+                {{ page_header|safe }}
+                {% when None %}
+                {% endmatch %}
+
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
                     {% match alerts %}
@@ -35,12 +42,6 @@
             {% endif %}
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                {% match page_header %}
-                {% when Some with (page_header) %}
-                {{ page_header|safe }}
-                {% when None %}
-                {% endmatch %}
-
                 {{ content|safe }}
             </div>
             <!-- /.container-fluid -->

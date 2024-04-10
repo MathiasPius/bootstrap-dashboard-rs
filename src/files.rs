@@ -20,7 +20,7 @@ pub const STATIC_FILES: Dir<'_> = include_dir::include_dir!("$CARGO_MANIFEST_DIR
 #[cfg(feature = "axum")]
 mod axum_files {
     use axum::{
-        body::{self, Empty, Full},
+        body::Body,
         extract::Path,
         http::{header, HeaderValue, Response, StatusCode},
         response::IntoResponse,
@@ -35,7 +35,7 @@ mod axum_files {
         match super::STATIC_FILES.get_file(path) {
             None => Response::builder()
                 .status(StatusCode::NOT_FOUND)
-                .body(body::boxed(Empty::new()))
+                .body(Body::empty())
                 .unwrap(),
             Some(file) => Response::builder()
                 .status(StatusCode::OK)
@@ -43,7 +43,7 @@ mod axum_files {
                     header::CONTENT_TYPE,
                     HeaderValue::from_str(mime_type.as_ref()).unwrap(),
                 )
-                .body(body::boxed(Full::from(file.contents())))
+                .body(Body::from(file.contents()))
                 .unwrap(),
         }
     }
@@ -55,7 +55,7 @@ mod axum_files {
     /// ```rust
     /// # use axum::{Router, routing::get, response::IntoResponse};
     ///
-    /// let app = Router::new()
+    /// let app = Router::<()>::new()
     ///     .route("/", get(my_front_page))
     ///     .merge(bootstrap_dashboard::files::serve_at("/static/*path"));
     ///
