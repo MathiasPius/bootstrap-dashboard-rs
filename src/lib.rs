@@ -13,6 +13,7 @@ pub mod card;
 mod color;
 pub mod files;
 pub mod grid;
+pub mod htmx;
 pub mod icons;
 mod page_header;
 mod sidebar;
