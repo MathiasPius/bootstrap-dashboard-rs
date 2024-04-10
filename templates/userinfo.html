@@ -1,24 +1,22 @@
 <!-- Nav Item - User Information -->
 <li class="nav-item dropdown no-arrow">
-    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
         <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ username }}</span>
-        <img class="img-profile rounded-circle"
-            src="{{ image }}">
+        <img class="img-profile rounded-circle" src="{{ image }}">
     </a>
     <!-- Dropdown - User Information -->
-    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-        aria-labelledby="userDropdown">
+    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
         {% for group in groups %}
-            {% if !loop.first %}
-                <div class="dropdown-divider"></div>
-            {% endif %}
-            {% for link in group %}
-                <a class="dropdown-item" href="{{ link.action.href() }}" {{ link.action.props()|safe }}>
-                    <i class="fas {{ link.icon }} fa-sm fa-fw mr-2 text-gray-400"></i>
-                    {{ link.label }}
-                </a>
-            {% endfor %}
+        {% if !loop.first %}
+        <div class="dropdown-divider"></div>
+        {% endif %}
+        {% for link in group %}
+        <a class="dropdown-item" href="{{ link.action.href() }}" {{ link.action.props()|safe }}>
+            <i class="fas {{ link.icon }} fa-sm fa-fw mr-2 text-gray-400"></i>
+            {{ link.label }}
+        </a>
+        {% endfor %}
         {% endfor %}
     </div>
 </li>

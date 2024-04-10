@@ -6,39 +6,39 @@
         <!-- Main Content -->
         <div id="content">
             {% if alerts.is_some() || userinfo.is_some() %}
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        {% match alerts %}
-                            {% when Some with (alerts) %}
-                                {{ alerts|safe }}
-                            {% when None %}
-                        {% endmatch %}
-                        
-                        {% if alerts.is_some() && userinfo.is_some() %}
-                            <div class="topbar-divider d-none d-sm-block"></div>
-                        {% endif %}
-                        
-                        {% match userinfo %}
-                            {% when Some with (userinfo) %}
-                                {{ userinfo|safe }}
-                            {% when None %}
-                        {% endmatch %}
-                    </ul>
-                </nav>
-                <!-- End of Topbar -->
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+                    {% match alerts %}
+                    {% when Some with (alerts) %}
+                    {{ alerts|safe }}
+                    {% when None %}
+                    {% endmatch %}
+
+                    {% if alerts.is_some() && userinfo.is_some() %}
+                    <div class="topbar-divider d-none d-sm-block"></div>
+                    {% endif %}
+
+                    {% match userinfo %}
+                    {% when Some with (userinfo) %}
+                    {{ userinfo|safe }}
+                    {% when None %}
+                    {% endmatch %}
+                </ul>
+            </nav>
+            <!-- End of Topbar -->
             {% endif %}
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 {% match page_header %}
-                    {% when Some with (page_header) %} 
-                        {{ page_header|safe }}
-                    {% when None %}
+                {% when Some with (page_header) %}
+                {{ page_header|safe }}
+                {% when None %}
                 {% endmatch %}
 
                 {{ content|safe }}
@@ -47,17 +47,17 @@
         </div>
         <!-- End of Main Content -->
         {% match copyright %}
-            {% when Some with (copyright) %}
-                <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; {{ copyright }}</span>
-                        </div>
-                    </div>
-                </footer>
-                <!-- End of Footer -->
-            {% when None%}
+        {% when Some with (copyright) %}
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; {{ copyright }}</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+        {% when None%}
         {% endmatch %}
     </div>
     <!-- End of Content Wrapper -->
