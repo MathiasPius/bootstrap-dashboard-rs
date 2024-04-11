@@ -276,6 +276,20 @@ impl<Content: Display> Dashboard<Content> {
         self.with_active(|_, label| label == active_label)
     }
 
+    /// Given the currently active URL, attempt to deduce the active link
+    /// by inspecting the target URLs and comparing them.
+    pub fn with_active_from_path(self, current_path: &str) -> Self {
+        self.with_active(|action, _| {
+            if let LinkAction::Href(url) = action {
+                if current_path.ends_with(url.as_ref()) {
+                    return true;
+                }
+            }
+
+            false
+        })
+    }
+
     fn with_active(mut self, selector: impl for<'r> Fn(&'r LinkAction, &'r str) -> bool) -> Self {
         'outer: for group in &mut self.sidebar.groups {
             for item in &mut group.items {
