@@ -21,3 +21,4 @@ This software is licensed under [MIT](LICENSE.md), but includes a number of simi
 * [jquery 3.6.0](jquery.org/license)
 * [Font Awesome Free 5.15.3](https://fontawesome.com/license/free)
 * [Nunito (Google Fonts)](https://fonts.google.com/specimen/Nunito/about)
+* [HTMX](https://github.com/bigskysoftware/htmx/blob/8e26d12c33caf7dc99c49d4918e7b8abd8028f98/LICENSE)
