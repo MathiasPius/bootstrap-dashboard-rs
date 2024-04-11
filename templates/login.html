@@ -11,11 +11,30 @@
                 <form method="POST" action="{{ submit_target }}">
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="Email">
+                        <input type="email" name="email"
+                            class="form-control{% if email_feedback.is_some() %} is-invalid{% endif %}" id="email"
+                            placeholder="Email" {% match email %}{% when Some with (email) %}value="{{ email }}" {% when
+                            None %}{% endmatch %}>
+                        {% match email_feedback %}
+                        {% when Some with (feedback ) %}
+                        <div class="invalid-feedback">
+                            {{ feedback }}
+                        </div>
+                        {% when None %}
+                        {% endmatch %}
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password">
+                        <input type="password" name="password"
+                            class="form-control{% if password_feedback.is_some() %} is-invalid{% endif %}" id="password"
+                            placeholder="Password">
+                        {% match password_feedback %}
+                        {% when Some with (feedback ) %}
+                        <div class="invalid-feedback">
+                            {{ feedback }}
+                        </div>
+                        {% when None %}
+                        {% endmatch %}
                     </div>
                     <div class="form-row align-items-center">
                         <div class="col-auto my-1">

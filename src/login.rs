@@ -9,6 +9,9 @@ use crate::{IconLink, PlainLink};
 pub struct LoginForm {
     pub unauthenticated_nav: Option<UnauthenticatedNav>,
     pub submit_target: Cow<'static, str>,
+    pub email: Option<Cow<'static, str>>,
+    pub email_feedback: Option<Cow<'static, str>>,
+    pub password_feedback: Option<Cow<'static, str>>,
 }
 
 #[derive(Template)]
@@ -24,4 +27,7 @@ pub struct UnauthenticatedNav {
 pub struct SignupForm {
     pub unauthenticated_nav: Option<UnauthenticatedNav>,
     pub submit_target: Cow<'static, str>,
+    pub email: Option<Cow<'static, str>>,
+    pub email_feedback: Option<Cow<'static, str>>,
+    pub password_feedback: Option<Cow<'static, str>>,
 }
