@@ -13,6 +13,7 @@ pub mod card;
 mod color;
 pub mod files;
 pub mod grid;
+pub mod htmx;
 pub mod icons;
 mod page_header;
 mod sidebar;
@@ -20,6 +21,7 @@ mod userinfo;
 
 pub use alerts::*;
 pub use color::*;
+use htmx::Dynamic;
 pub use icons::Icon;
 pub use page_header::PageHeader;
 pub use sidebar::*;
@@ -181,7 +183,7 @@ pub struct Dashboard<Content: Display = &'static str> {
     pub copyright: Option<Cow<'static, str>>,
     /// [`Sidebar`] structure defining the layout of the left-hand menu.
     pub sidebar: Sidebar,
-    pub alerts: Option<Alerts>,
+    pub alerts: Option<Dynamic<Alerts>>,
     pub userinfo: Option<UserInfo>,
     pub page_header: Option<PageHeader>,
     pub content: Content,
@@ -206,8 +208,8 @@ impl<Content: Display> Dashboard<Content> {
         self
     }
 
-    pub fn with_alerts(mut self, alerts: Alerts) -> Self {
-        self.alerts = Some(alerts);
+    pub fn with_alerts<T: Into<Dynamic<Alerts>>>(mut self, alerts: T) -> Self {
+        self.alerts = Some(alerts.into());
         self
     }
 

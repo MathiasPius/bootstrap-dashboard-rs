@@ -1,6 +1,7 @@
 //! Font-Awesome icons
 use std::{borrow::Cow, fmt::Display};
 
+#[derive(Debug, Clone)]
 /// Font-Awesome Icon
 pub struct Icon(Cow<'static, str>);
 

@@ -1,0 +1,17 @@
+{% for alert in self.0 %}
+<a class="dropdown-item d-flex align-items-center" href="#">
+    <div class="mr-3">
+        <div class="icon-circle {{ alert.color.as_background() }}">
+            <i class="fas {{ alert.icon }} text-white"></i>
+        </div>
+    </div>
+    <div>
+        <div class="small text-gray-500">{{ alert.headline }}</div>
+        {% if alert.unread %}
+        <span class="font-weight-bold">{{ alert.message }}</span>
+        {% else %}
+        {{ alert.message }}
+        {% endif %}
+    </div>
+</a>
+{% endfor %}

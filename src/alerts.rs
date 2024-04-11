@@ -2,11 +2,12 @@ use std::borrow::Cow;
 
 use askama::Template;
 
-use crate::{icons, Icon};
+use crate::{htmx::Dynamic, icons, Icon};
 
 use super::color::Color;
 
 /// Single Alert entry.
+#[derive(Debug, Clone)]
 pub struct Alert {
     /// Coloring used for the background of the alert icon.
     pub color: Color,
@@ -47,12 +48,22 @@ impl Alert {
     }
 }
 
+#[derive(Template)]
+#[template(path = "alertlist.html")]
+pub struct AlertList(pub Vec<Alert>);
+
+impl AlertList {
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+}
+
 /// List of Alerts
 #[derive(Template)]
 #[template(path = "alerts.html")]
 pub struct Alerts {
     /// List of [`Alert`]s
-    pub alerts: Vec<Alert>,
+    pub alerts: Dynamic<AlertList>,
     /// Optional link to page where alerts can be viewed in full.
     pub show_all_url: Option<Cow<'static, str>>,
 }
