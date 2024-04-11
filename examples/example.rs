@@ -50,9 +50,8 @@ async fn index() -> impl IntoResponse {
     Html(
         Page::new("Dashboard", "/static-path/nested")
             .with_content(
-                dashboard_builder()
+                dashboard_builder("Dashboard")
                     .await
-                    .with_active_label("Dashboard")
                     .with_page_header("Dashboard")
                     .replace_content("This is the front page!"),
             )
@@ -82,9 +81,8 @@ async fn configuration() -> impl IntoResponse {
     Html(
         Page::new("My First Dashbaord", "/static-path/nested")
             .with_content(
-                dashboard_builder()
+                dashboard_builder("Configuration")
                     .await
-                    .with_active_label("Configuration")
                     .with_page_header("Configuration")
                     .replace_content(row1),
             )
@@ -92,7 +90,7 @@ async fn configuration() -> impl IntoResponse {
     )
 }
 
-async fn dashboard_builder() -> Dashboard {
+async fn dashboard_builder(active_label: &str) -> Dashboard {
     let sidebar = Sidebar::new("Dashboard", icons::fa::LAUGH_SQUINT)
         .with_group(
             Group::unlabeled()
@@ -128,7 +126,8 @@ async fn dashboard_builder() -> Dashboard {
                     icons::fa::BELL,
                     LinkAction::to("/"),
                 )),
-        );
+        )
+        .with_active_label(active_label);
 
     let userinfo = UserInfo {
         username: "John Smith".into(),
@@ -148,7 +147,8 @@ async fn dashboard_builder() -> Dashboard {
         ],
     };
 
-    Dashboard::new(sidebar)
+    Dashboard::default()
+        .with_sidebar(sidebar)
         .with_copyright("Bootstrap Dashboard")
         .with_alerts(Alerts {
             alerts: AlertList(vec![Alert::new(

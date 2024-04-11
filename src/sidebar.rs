@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use askama::Template;
 
-use crate::Icon;
+use crate::{Icon, LinkAction};
 
 use super::{IconLink, PlainLink};
 
@@ -171,6 +171,86 @@ impl Sidebar {
 
     pub fn with_group(mut self, group: Group) -> Self {
         self.groups.push(group);
+        self
+    }
+
+    /// Sets the `active` field of the first [`IconLink`] or [`PlainLink`] whose
+    /// label matches the provided `active_label`.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use bootstrap_dashboard::{Dashboard, SubGroup, Group, IconLink, icons, LinkAction, Sidebar};
+    /// let dashboard = Dashboard {
+    ///     sidebar: Sidebar {
+    ///         groups: vec![
+    ///             Group::unlabeled()
+    ///                 .with_item(IconLink::new(
+    ///                     "Dashboard",
+    ///                     icons::fa::TACHOMETER_ALT,
+    ///                     LinkAction::to("/"),
+    ///                 ))
+    ///                 // This is the item which wil be marked "active".
+    ///                 .with_item(IconLink::new(
+    ///                     "Configuration",
+    ///                     icons::fa::COGS,
+    ///                     LinkAction::to("/"),
+    ///                 )),
+    ///         ],
+    ///         // ...
+    /// #       name: "".into(),
+    /// #       logo: icons::fa::LAUGH_WINK
+    ///     },
+    ///     // ...
+    /// #   copyright: None,
+    /// #   page_header: None,
+    /// #   alerts: None,
+    /// #   userinfo: None,
+    /// #   content: "",
+    /// }.with_active_label("Configuration");
+    ///
+    /// ```
+    pub fn with_active_label(self, active_label: &str) -> Self {
+        self.with_active(|_, label| label == active_label)
+    }
+
+    /// Given the currently active URL, attempt to deduce the active link
+    /// by inspecting the target URLs and comparing them.
+    pub fn with_active_from_path(self, current_path: &str) -> Self {
+        self.with_active(|action, _| {
+            if let LinkAction::Href(url) = action {
+                if current_path.ends_with(url.as_ref()) {
+                    return true;
+                }
+            }
+
+            false
+        })
+    }
+
+    fn with_active(mut self, selector: impl for<'r> Fn(&'r LinkAction, &'r str) -> bool) -> Self {
+        'outer: for group in &mut self.groups {
+            for item in &mut group.items {
+                match item {
+                    NavItem::Link(link) => {
+                        if selector(&link.action, &link.label) {
+                            link.active = true;
+                            break 'outer;
+                        }
+                    }
+                    NavItem::Collapsible { subgroups, .. } => {
+                        for subgroup in subgroups {
+                            for link in &mut subgroup.links {
+                                if selector(&link.action, &link.label) {
+                                    link.active = true;
+                                    break 'outer;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         self
     }
 }

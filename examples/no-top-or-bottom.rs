@@ -28,11 +28,7 @@ async fn main() {
 async fn index() -> impl IntoResponse {
     Html(
         Page::new("Front Page", "/static-path")
-            .with_content(
-                dashboard_builder()
-                    .with_active_label("Dashboard")
-                    .replace_content("This is the front page!"),
-            )
+            .with_content(dashboard_builder("Dashboard").replace_content("This is the front page!"))
             .to_string(),
     )
 }
@@ -41,15 +37,14 @@ async fn configuration() -> impl IntoResponse {
     Html(
         Page::new("Configuration Page", "/static-path")
             .with_content(
-                dashboard_builder()
-                    .with_active_label("Configuration")
+                dashboard_builder("Configuration")
                     .replace_content("This is the configuration page!"),
             )
             .to_string(),
     )
 }
 
-fn dashboard_builder() -> Dashboard {
+fn dashboard_builder(active_label: &str) -> Dashboard {
     let sidebar = Sidebar {
         name: "Dashboard".into(),
         logo: icons::fa::LAUGH_SQUINT,
@@ -86,7 +81,8 @@ fn dashboard_builder() -> Dashboard {
                     LinkAction::to("/"),
                 )),
         ],
-    };
+    }
+    .with_active_label(active_label);
 
-    Dashboard::new(sidebar)
+    Dashboard::default().with_sidebar(sidebar)
 }

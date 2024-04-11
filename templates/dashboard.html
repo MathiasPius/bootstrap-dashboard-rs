@@ -1,11 +1,15 @@
 <!-- Page Wrapper -->
 <div id="wrapper">
+    {% match sidebar %}
+    {% when Some with (sidebar) %}
     {{ sidebar|safe }}
+    {% when None %}
+    {% endmatch %}
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
         <div id="content">
-            {% if alerts.is_some() || userinfo.is_some() %}
+            {% if alerts.is_some() || userinfo.is_some() || page_header.is_some() %}
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                 <!-- Sidebar Toggle (Topbar) -->
@@ -19,6 +23,7 @@
                 {% when None %}
                 {% endmatch %}
 
+                {% if alerts.is_some() || userinfo.is_some() %}
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
                     {% match alerts %}
@@ -37,6 +42,7 @@
                     {% when None %}
                     {% endmatch %}
                 </ul>
+                {% endif %}
             </nav>
             <!-- End of Topbar -->
             {% endif %}

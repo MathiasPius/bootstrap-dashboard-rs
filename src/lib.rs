@@ -182,7 +182,7 @@ pub struct Dashboard<Content: Display = &'static str> {
     /// Used for copyright notice.
     pub copyright: Option<Cow<'static, str>>,
     /// [`Sidebar`] structure defining the layout of the left-hand menu.
-    pub sidebar: Sidebar,
+    pub sidebar: Option<Sidebar>,
     pub alerts: Option<Dynamic<Alerts>>,
     pub userinfo: Option<UserInfo>,
     pub page_header: Option<PageHeader>,
@@ -190,10 +190,10 @@ pub struct Dashboard<Content: Display = &'static str> {
 }
 
 impl Dashboard<&'static str> {
-    pub fn new(sidebar: Sidebar) -> Self {
+    pub fn new() -> Self {
         Dashboard {
             copyright: None,
-            sidebar,
+            sidebar: None,
             alerts: None,
             userinfo: None,
             page_header: None,
@@ -202,7 +202,18 @@ impl Dashboard<&'static str> {
     }
 }
 
+impl Default for Dashboard<&'static str> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<Content: Display> Dashboard<Content> {
+    pub fn with_sidebar<S: Into<Sidebar>>(mut self, sidebar: S) -> Self {
+        self.sidebar = Some(sidebar.into());
+        self
+    }
+
     pub fn with_copyright<S: Into<Cow<'static, str>>>(mut self, copyright: S) -> Self {
         self.copyright = Some(copyright.into());
         self
@@ -235,85 +246,5 @@ impl<Content: Display> Dashboard<Content> {
             page_header: self.page_header,
             content,
         }
-    }
-
-    /// Sets the `active` field of the first [`IconLink`] or [`PlainLink`] whose
-    /// label matches the provided `active_label`.
-    ///
-    /// # Example
-    /// ```rust
-    /// # use bootstrap_dashboard::{Dashboard, SubGroup, Group, IconLink, icons, LinkAction, Sidebar};
-    /// let dashboard = Dashboard {
-    ///     sidebar: Sidebar {
-    ///         groups: vec![
-    ///             Group::unlabeled()
-    ///                 .with_item(IconLink::new(
-    ///                     "Dashboard",
-    ///                     icons::fa::TACHOMETER_ALT,
-    ///                     LinkAction::to("/"),
-    ///                 ))
-    ///                 // This is the item which wil be marked "active".
-    ///                 .with_item(IconLink::new(
-    ///                     "Configuration",
-    ///                     icons::fa::COGS,
-    ///                     LinkAction::to("/"),
-    ///                 )),
-    ///         ],
-    ///         // ...
-    /// #       name: "".into(),
-    /// #       logo: icons::fa::LAUGH_WINK
-    ///     },
-    ///     // ...
-    /// #   copyright: None,
-    /// #   page_header: None,
-    /// #   alerts: None,
-    /// #   userinfo: None,
-    /// #   content: "",
-    /// }.with_active_label("Configuration");
-    ///
-    /// ```
-    pub fn with_active_label(self, active_label: &str) -> Self {
-        self.with_active(|_, label| label == active_label)
-    }
-
-    /// Given the currently active URL, attempt to deduce the active link
-    /// by inspecting the target URLs and comparing them.
-    pub fn with_active_from_path(self, current_path: &str) -> Self {
-        self.with_active(|action, _| {
-            if let LinkAction::Href(url) = action {
-                if current_path.ends_with(url.as_ref()) {
-                    return true;
-                }
-            }
-
-            false
-        })
-    }
-
-    fn with_active(mut self, selector: impl for<'r> Fn(&'r LinkAction, &'r str) -> bool) -> Self {
-        'outer: for group in &mut self.sidebar.groups {
-            for item in &mut group.items {
-                match item {
-                    NavItem::Link(link) => {
-                        if selector(&link.action, &link.label) {
-                            link.active = true;
-                            break 'outer;
-                        }
-                    }
-                    NavItem::Collapsible { subgroups, .. } => {
-                        for subgroup in subgroups {
-                            for link in &mut subgroup.links {
-                                if selector(&link.action, &link.label) {
-                                    link.active = true;
-                                    break 'outer;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        self
     }
 }

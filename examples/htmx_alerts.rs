@@ -56,22 +56,22 @@ async fn main() {
 }
 
 async fn index(state: State<Arc<RwLock<Vec<Alert>>>>) -> impl IntoResponse {
-    let sidebar = Sidebar::new("Dashboard", icons::fa::LAUGH_SQUINT).with_group(
-        Group::unlabeled().with_item(IconLink::new(
+    let sidebar = Sidebar::new("Dashboard", icons::fa::LAUGH_SQUINT)
+        .with_group(Group::unlabeled().with_item(IconLink::new(
             "Dashboard",
             icons::fa::TACHOMETER_ALT,
             LinkAction::to("/"),
-        )),
-    );
+        )))
+        .with_active_label("Dashboard");
 
     let alerts = Alerts {
         alerts: alerts(state).await.into(),
         show_all_url: Some("/notifications".into()),
     };
 
-    let dashboard = Dashboard::new(sidebar)
+    let dashboard = Dashboard::default()
+        .with_sidebar(sidebar)
         .with_alerts(alerts)
-        .with_active_label("Dashboard")
         .with_page_header("Dashboard")
         .replace_content("This is the front page!");
 

@@ -32,9 +32,8 @@ async fn index() -> impl IntoResponse {
     Html(
         Page::new("Dashboard", "/static-path/nested")
             .with_content(
-                dashboard_builder()
-                    .await
-                    .with_active_label("Dashboard")
+                Dashboard::default()
+                    .with_sidebar(sidebar_builder().await.with_active_label("Dashboard"))
                     .with_page_header("Dashboard")
                     .replace_content("This is the front page!"),
             )
@@ -46,9 +45,8 @@ async fn others(OriginalUri(uri): OriginalUri) -> impl IntoResponse {
     Html(
         Page::new("Dashboard", "/static-path/nested")
             .with_content(
-                dashboard_builder()
-                    .await
-                    .with_active_from_path(uri.path())
+                Dashboard::default()
+                    .with_sidebar(sidebar_builder().await.with_active_from_path(uri.path()))
                     .with_page_header("A link page")
                     .replace_content("This is a link page"),
             )
@@ -56,8 +54,8 @@ async fn others(OriginalUri(uri): OriginalUri) -> impl IntoResponse {
     )
 }
 
-async fn dashboard_builder() -> Dashboard {
-    let sidebar = Sidebar::new("Dashboard", icons::fa::LAUGH_SQUINT).with_group(
+async fn sidebar_builder() -> Sidebar {
+    Sidebar::new("Dashboard", icons::fa::LAUGH_SQUINT).with_group(
         Group::unlabeled()
             .with_item(IconLink::new(
                 "Dashboard",
@@ -79,7 +77,5 @@ async fn dashboard_builder() -> Dashboard {
                 icons::fa::COGS,
                 LinkAction::to("/link3"),
             )),
-    );
-
-    Dashboard::new(sidebar).with_copyright("Bootstrap Dashboard")
+    )
 }
