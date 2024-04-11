@@ -21,5 +21,4 @@ axum = ["dep:axum", "dep:mime_guess", "dep:askama_axum"]
 serde = { version = "1.0.197", features = ["derive"] }
 tracing-subscriber = "0.3.17"
 tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
-time = { version = "0.3.35", features = ["serde", "parsing"] }
 axum-htmx = "*"

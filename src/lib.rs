@@ -264,9 +264,8 @@ impl<Content: Display> Dashboard<Content> {
     /// #       logo: icons::fa::LAUGH_WINK
     ///     },
     ///     // ...
-    /// #   copyright: "",
-    /// #   static_path: "",
-    /// #   title: "".into(),
+    /// #   copyright: None,
+    /// #   page_header: None,
     /// #   alerts: None,
     /// #   userinfo: None,
     /// #   content: "",

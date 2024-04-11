@@ -1,8 +1,5 @@
-use std::{sync::Arc, time::Duration};
-
 use axum::{
     body::Body,
-    extract::State,
     http::{header, HeaderValue, Response, StatusCode},
     response::{Html, IntoResponse},
     routing::get,
@@ -11,47 +8,21 @@ use axum::{
 use bootstrap_dashboard::{
     card::Card,
     grid::{Breakpoint, Column, Row},
-    htmx::{Dynamic, Hx, IntoDynamic, TriggerEvent},
     icons, Alert, AlertList, Alerts, Dashboard, Group, IconLink, LinkAction, NavItem, Page,
     PlainLink, Sidebar, SubGroup, UserInfo,
 };
-use tokio::{net::TcpListener, sync::RwLock};
+use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
-    let alert_vec = Arc::new(RwLock::new(vec![Alert::new(
-        "December 7, 1991",
-        "A new monthly report is ready to download!",
-    )
-    .unread()]));
-
-    let alerts_clone = alert_vec.clone();
-    tokio::spawn(async move {
-        let mut index = 0;
-        loop {
-            {
-                let mut lock = alerts_clone.write().await;
-                lock.push(Alert::new(
-                    format!("Alert number {index}!"),
-                    "Should probably really act on this!",
-                ));
-            }
-            index += 1;
-
-            tokio::time::sleep(Duration::from_secs(5)).await;
-        }
-    });
-
     // build our application with a route
     let app = Router::new()
         .route("/", get(index))
         .route("/configuration", get(configuration))
-        .route("/alerts", get(alerts))
         .route("/img/undraw_profile.svg", get(serve_profile_image))
         .merge(bootstrap_dashboard::files::serve_at(
             "/static-path/nested/*path",
-        ))
-        .with_state(alert_vec);
+        ));
 
     println!("Example running at http://localhost:3000");
 
@@ -75,11 +46,11 @@ async fn serve_profile_image() -> impl IntoResponse {
         .unwrap()
 }
 
-async fn index(state: State<Arc<RwLock<Vec<Alert>>>>) -> impl IntoResponse {
+async fn index() -> impl IntoResponse {
     Html(
         Page::new("Dashboard", "/static-path/nested")
             .with_content(
-                dashboard_builder(state)
+                dashboard_builder()
                     .await
                     .with_active_label("Dashboard")
                     .with_page_header("Dashboard")
@@ -89,7 +60,7 @@ async fn index(state: State<Arc<RwLock<Vec<Alert>>>>) -> impl IntoResponse {
     )
 }
 
-async fn configuration(state: State<Arc<RwLock<Vec<Alert>>>>) -> impl IntoResponse {
+async fn configuration() -> impl IntoResponse {
     let row1 = Row::new()
         .with_column(
             Card::new("Hello world")
@@ -111,7 +82,7 @@ async fn configuration(state: State<Arc<RwLock<Vec<Alert>>>>) -> impl IntoRespon
     Html(
         Page::new("My First Dashbaord", "/static-path/nested")
             .with_content(
-                dashboard_builder(state)
+                dashboard_builder()
                     .await
                     .with_active_label("Configuration")
                     .with_page_header("Configuration")
@@ -121,15 +92,7 @@ async fn configuration(state: State<Arc<RwLock<Vec<Alert>>>>) -> impl IntoRespon
     )
 }
 
-async fn alerts(State(alerts): State<Arc<RwLock<Vec<Alert>>>>) -> Dynamic<AlertList> {
-    let alerts = alerts.read().await.iter().cloned().collect();
-
-    AlertList(alerts).with_hx(
-        Hx::get(format!("/alerts")).with_trigger(TriggerEvent::Every(Duration::from_secs(1))),
-    )
-}
-
-async fn dashboard_builder(state: State<Arc<RwLock<Vec<Alert>>>>) -> Dashboard {
+async fn dashboard_builder() -> Dashboard {
     let sidebar = Sidebar::new("Dashboard", icons::fa::LAUGH_SQUINT)
         .with_group(
             Group::unlabeled()
@@ -185,13 +148,16 @@ async fn dashboard_builder(state: State<Arc<RwLock<Vec<Alert>>>>) -> Dashboard {
         ],
     };
 
-    let alerts = Alerts {
-        alerts: alerts(state).await.into(),
-        show_all_url: Some("/notifications".into()),
-    };
-
     Dashboard::new(sidebar)
         .with_copyright("Bootstrap Dashboard")
-        .with_alerts(alerts)
+        .with_alerts(Alerts {
+            alerts: AlertList(vec![Alert::new(
+                "Some alert example",
+                "Alert contents go here",
+            )
+            .unread()])
+            .into(),
+            show_all_url: Some("/notifications".into()),
+        })
         .with_userinfo(userinfo)
 }
