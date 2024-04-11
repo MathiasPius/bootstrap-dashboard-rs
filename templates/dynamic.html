@@ -1,0 +1,3 @@
+<div {% match hx %}{% when Some with (hx) %}{{ hx|safe }}{% when None %}{% endmatch %}>
+    {{ content|safe }}
+</div>

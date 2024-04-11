@@ -5,11 +5,60 @@ use std::{
     vec,
 };
 
+use askama::Template;
+
+/// Dynamic auto-updating wrapper around a template or object.
+#[derive(Debug, Clone, Template)]
+#[template(path = "dynamic.html")]
+pub struct Dynamic<T: Display> {
+    pub content: T,
+    hx: Option<Hx>,
+}
+
+impl<T: Display> Dynamic<T> {
+    pub fn new(value: T, hx: Hx) -> Self {
+        Dynamic {
+            content: value,
+            hx: Some(hx),
+        }
+    }
+
+    pub fn with_hx(self, hx: Hx) -> Self {
+        Dynamic {
+            content: self.content,
+            hx: Some(hx),
+        }
+    }
+}
+
+impl<T: Display> From<T> for Dynamic<T> {
+    fn from(value: T) -> Self {
+        Dynamic {
+            content: value,
+            hx: None,
+        }
+    }
+}
+
+pub trait IntoDynamic: Display + Sized {
+    fn with_hx(self, hx: Hx) -> Dynamic<Self>;
+}
+
+impl<T: Display> IntoDynamic for T {
+    fn with_hx(self, hx: Hx) -> Dynamic<Self> {
+        Dynamic {
+            content: self,
+            hx: Some(hx),
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Hx {
     url: Request,
-    pub target: Option<Cow<'static, str>>,
+    pub target: Option<Target>,
     pub triggers: Vec<Trigger>,
+    pub swap: Option<Swap>,
 }
 
 #[derive(Debug, Clone)]
@@ -33,6 +82,7 @@ impl Hx {
             url: Request::Get(path.into()),
             target: None,
             triggers: vec![],
+            swap: None,
         }
     }
 
@@ -41,16 +91,22 @@ impl Hx {
             url: Request::Post(path.into()),
             target: None,
             triggers: vec![],
+            swap: None,
         }
     }
 
-    pub fn with_target<T: Into<Cow<'static, str>>>(mut self, target: T) -> Self {
+    pub fn with_target<T: Into<Target>>(mut self, target: T) -> Self {
         self.target.replace(target.into());
         self
     }
 
     pub fn with_trigger<T: Into<Trigger>>(mut self, trigger: T) -> Self {
         self.triggers.push(trigger.into());
+        self
+    }
+
+    pub fn with_swap<T: Into<Swap>>(mut self, swap: T) -> Self {
+        self.swap.replace(swap.into());
         self
     }
 }
@@ -73,6 +129,10 @@ impl Display for Hx {
                     .collect::<Vec<_>>()
                     .join(", ")
             )?;
+        }
+
+        if let Some(swap) = &self.swap {
+            write!(f, "{}", swap)?;
         }
 
         Ok(())
@@ -231,11 +291,36 @@ impl Display for QueueOption {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct Swap {
     pub target: SwapTarget,
     pub modifiers: Option<SwapModifiers>,
 }
 
+impl From<SwapTarget> for Swap {
+    fn from(value: SwapTarget) -> Self {
+        Swap {
+            target: value,
+            modifiers: None,
+        }
+    }
+}
+
+impl Display for Swap {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            r#"hx-swap="{}{}""#,
+            self.target,
+            self.modifiers
+                .as_ref()
+                .map(ToString::to_string)
+                .unwrap_or_default()
+        )
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct SwapModifiers {
     pub transition: Option<bool>,
     pub swap_delay: Option<Duration>,
@@ -286,30 +371,61 @@ pub enum SwapTarget {
     AfterEnd,
     Delete,
     None,
+}
+
+#[derive(Debug, Clone)]
+pub enum Target {
     This,
     Closest(Cow<'static, str>),
     Find(Cow<'static, str>),
     Next(Cow<'static, str>),
     Previous(Cow<'static, str>),
+    Specific(Cow<'static, str>),
+}
+
+impl From<&'static str> for Target {
+    fn from(value: &'static str) -> Self {
+        Target::Specific(value.into())
+    }
+}
+
+impl From<String> for Target {
+    fn from(value: String) -> Self {
+        Target::Specific(value.into())
+    }
+}
+
+impl Display for Target {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Target::This => f.write_str("this"),
+            Target::Closest(value) => write!(f, "closest:{value}"),
+            Target::Find(value) => write!(f, "find:{value}"),
+            Target::Next(value) => write!(f, "next:{value}"),
+            Target::Previous(value) => write!(f, "previous:{value}"),
+            Target::Specific(value) => f.write_str(value),
+        }
+    }
+}
+
+impl AsRef<str> for SwapTarget {
+    fn as_ref(&self) -> &str {
+        match self {
+            SwapTarget::InnerHtml => "innerHTML",
+            SwapTarget::OuterHtml => "outerHTML",
+            SwapTarget::BeforeBegin => "beforebegin",
+            SwapTarget::AfterBegin => "afterbegin",
+            SwapTarget::BeforeEnd => "beforeend",
+            SwapTarget::AfterEnd => "afterend",
+            SwapTarget::Delete => "delete",
+            SwapTarget::None => "none",
+        }
+    }
 }
 
 impl Display for SwapTarget {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            SwapTarget::InnerHtml => f.write_str("innerHTML"),
-            SwapTarget::OuterHtml => f.write_str("outerHTML"),
-            SwapTarget::BeforeBegin => f.write_str("beforebegin"),
-            SwapTarget::AfterBegin => f.write_str("afterbegin"),
-            SwapTarget::BeforeEnd => f.write_str("beforeend"),
-            SwapTarget::AfterEnd => f.write_str("afterend"),
-            SwapTarget::Delete => f.write_str("delete"),
-            SwapTarget::None => f.write_str("none"),
-            SwapTarget::This => f.write_str("this"),
-            SwapTarget::Closest(value) => write!(f, "closest:{value}"),
-            SwapTarget::Find(value) => write!(f, "find:{value}"),
-            SwapTarget::Next(value) => write!(f, "next:{value}"),
-            SwapTarget::Previous(value) => write!(f, "previous:{value}"),
-        }
+        f.write_str(self.as_ref())
     }
 }
 
@@ -317,7 +433,7 @@ impl Display for SwapTarget {
 #[test]
 pub fn hx_construction() {
     let props = Hx::get("/notifications")
-        .with_target("closest div#lol")
+        .with_target("div#lol")
         .with_trigger(TriggerEvent::Every(Duration::from_millis(1500)).with_conditional("ctrlKey"))
         .with_trigger(
             TriggerEvent::Click
