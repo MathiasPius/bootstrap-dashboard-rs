@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+    <div class="d-sm-flex align-items-center mb-6">
+        <a class="nav-item" href="{{ header_link.action.href() }}" {{ header_link.action.props()|safe }}>
+            <h1 class="h3 mb-0">{{ header_link.label }}</h1>
+        </a>
+    </div>
+
+    <!-- Topbar Navbar -->
+    <ul class="navbar-nav ml-auto">
+        {% match login_link %}
+        {% when Some with (link) %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ link.action.href() }}" {{ link.action.props()|safe }} role="button">
+                <i class="fas fa-fw {{ link.icon }}"></i>
+                <span class="ml-2">{{ link.label }}</span>
+            </a>
+        </li>
+        {% when None %}
+        {% endmatch %}
+
+        {% match signup_link %}
+        {% when Some with (link) %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ link.action.href() }}" {{ link.action.props()|safe }} role="button">
+                <i class="fas fa-fw {{ link.icon }}"></i>
+                <span class="ml-2">{{ link.label }}</span>
+            </a>
+        </li>
+        {% when None %}
+        {% endmatch %}
+    </ul>
+</nav>

@@ -15,13 +15,14 @@ pub mod files;
 pub mod grid;
 pub mod htmx;
 pub mod icons;
+pub mod login;
 mod page_header;
 mod sidebar;
 mod userinfo;
 
 pub use alerts::*;
 pub use color::*;
-use htmx::Dynamic;
+pub use htmx::Dynamic;
 pub use icons::Icon;
 pub use page_header::PageHeader;
 pub use sidebar::*;
