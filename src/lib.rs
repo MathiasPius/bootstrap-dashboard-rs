@@ -273,15 +273,15 @@ impl<Content: Display> Dashboard<Content> {
     ///
     /// ```
     pub fn with_active_label(self, active_label: &str) -> Self {
-        self.with_active(|label| label == active_label)
+        self.with_active(|_, label| label == active_label)
     }
 
-    fn with_active(mut self, selector: impl for<'r> Fn(&'r str) -> bool) -> Self {
+    fn with_active(mut self, selector: impl for<'r> Fn(&'r LinkAction, &'r str) -> bool) -> Self {
         'outer: for group in &mut self.sidebar.groups {
             for item in &mut group.items {
                 match item {
                     NavItem::Link(link) => {
-                        if selector(&link.label) {
+                        if selector(&link.action, &link.label) {
                             link.active = true;
                             break 'outer;
                         }
@@ -289,7 +289,7 @@ impl<Content: Display> Dashboard<Content> {
                     NavItem::Collapsible { subgroups, .. } => {
                         for subgroup in subgroups {
                             for link in &mut subgroup.links {
-                                if selector(&link.label) {
+                                if selector(&link.action, &link.label) {
                                     link.active = true;
                                     break 'outer;
                                 }
