@@ -27,11 +27,15 @@
     {% for item in group.items %}
     <!-- Nav Item - {{ item.label() }} -->
     {% match item %}
-    {% when NavItem::Link with (iconlink) %}
-    <li class="nav-item {% if iconlink.active %}active{% endif %}">
-        <a class="nav-link" href="{{ iconlink.action.href() }}" {{ iconlink.action.props()|safe }}>
-            <i class="fas fa-fw {{ iconlink.icon }}"></i>
-            <span>{{ iconlink.label }}</span></a>
+    {% when NavItem::Link with (navlink) %}
+    <li class="nav-item {% if navlink.active() %}active{% endif %}">
+        <a class="nav-link" href="{{ navlink.action().href() }}" {{ navlink.action().props()|safe }}>
+            {% match navlink.icon() %}
+            {% when Some with (icon) %}
+            <i class="fas fa-fw {{ icon }}"></i>
+            {% when None %}
+            {% endmatch %}
+            <span>{{ navlink.label() }}</span></a>
     </li>
     {% when NavItem::Collapsible with { label, icon, subgroups } %}
     <li class="nav-item">

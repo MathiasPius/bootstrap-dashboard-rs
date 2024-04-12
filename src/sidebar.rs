@@ -2,9 +2,10 @@ use std::borrow::Cow;
 
 use askama::Template;
 
-use crate::{Icon, LinkAction};
-
-use super::{IconLink, PlainLink};
+use crate::{
+    links::{IconLink, LinkAction, NavLink, PlainLink},
+    Icon,
+};
 
 /// Sidebar menu [`Group`]s have optional labels, and are always
 /// separated by a divider.
@@ -60,7 +61,7 @@ impl From<Vec<NavItem>> for Group {
 /// or a collapsible menu item with further sub-groups of links.
 pub enum NavItem {
     /// Label & Icon which links to page or toggles a Modal.
-    Link(IconLink),
+    Link(NavLink),
     /// Collapsible sub-menu containing one or more groups of links.
     Collapsible {
         /// Label for the collapsible menu item.
@@ -88,7 +89,13 @@ impl NavItem {
 
 impl From<IconLink> for NavItem {
     fn from(value: IconLink) -> Self {
-        NavItem::Link(value)
+        NavItem::Link(NavLink::Icon(value))
+    }
+}
+
+impl From<PlainLink> for NavItem {
+    fn from(value: PlainLink) -> Self {
+        NavItem::Link(NavLink::Plain(value))
     }
 }
 
@@ -96,7 +103,8 @@ impl NavItem {
     /// Get the label for the [`NavItem`]
     pub fn label(&self) -> &Cow<'static, str> {
         match self {
-            NavItem::Link(IconLink { label, .. }) | NavItem::Collapsible { label, .. } => label,
+            NavItem::Link(nav) => nav.label(),
+            NavItem::Collapsible { label, .. } => label,
         }
     }
 }
@@ -232,8 +240,11 @@ impl Sidebar {
             for item in &mut group.items {
                 match item {
                     NavItem::Link(link) => {
-                        if selector(&link.action, &link.label) {
-                            link.active = true;
+                        if selector(&link.action(), &link.label()) {
+                            match link {
+                                NavLink::Plain(plain) => plain.active = true,
+                                NavLink::Icon(icon) => icon.active = true,
+                            }
                             break 'outer;
                         }
                     }

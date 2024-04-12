@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use askama::Template;
 
-use super::IconLink;
+use crate::links::IconLink;
 
 /// UserInfo object shown in the top-right of the dashboard
 /// indicating the currently logged-in user, and providing a

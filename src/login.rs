@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use askama::Template;
 
-use crate::{IconLink, PlainLink};
+use crate::links::{NavLink, PlainLink};
 
 #[derive(Template)]
 #[template(path = "login.html")]
@@ -18,8 +18,8 @@ pub struct LoginForm {
 #[template(path = "unauth_nav.html")]
 pub struct UnauthenticatedNav {
     pub header_link: PlainLink,
-    pub login_link: Option<IconLink>,
-    pub signup_link: Option<IconLink>,
+    pub login_link: Option<NavLink>,
+    pub signup_link: Option<NavLink>,
 }
 
 #[derive(Template)]

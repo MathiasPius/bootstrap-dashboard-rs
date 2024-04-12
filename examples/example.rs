@@ -121,11 +121,7 @@ async fn dashboard_builder(active_label: &str) -> Dashboard {
                             .with_link(PlainLink::new("Sit Amet", LinkAction::to("/"))),
                     ],
                 ))
-                .with_item(IconLink::new(
-                    "Plain Link",
-                    icons::fa::BELL,
-                    LinkAction::to("/"),
-                )),
+                .with_item(PlainLink::new("Plain Link", LinkAction::to("/"))),
         )
         .with_active_label(active_label);
 

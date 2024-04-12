@@ -15,6 +15,7 @@ pub mod files;
 pub mod grid;
 pub mod htmx;
 pub mod icons;
+mod links;
 pub mod login;
 mod page_header;
 mod sidebar;
@@ -24,55 +25,10 @@ pub use alerts::*;
 pub use color::*;
 pub use htmx::Dynamic;
 pub use icons::Icon;
+pub use links::{IconLink, LinkAction, NavLink, PlainLink};
 pub use page_header::PageHeader;
 pub use sidebar::*;
 pub use userinfo::*;
-
-/// Action to take on link press.
-///
-/// Can either act as a regular link, sending the user to a new path,
-/// or toggle a modal, such as a logout pop-up window warning or similar.
-pub enum LinkAction {
-    Href(Cow<'static, str>),
-    ToggleModal(Cow<'static, str>),
-}
-
-impl LinkAction {
-    pub fn to<S: Into<Cow<'static, str>>>(url: S) -> Self {
-        LinkAction::Href(url.into())
-    }
-
-    pub fn modal<S: Into<Cow<'static, str>>>(name: S) -> Self {
-        LinkAction::ToggleModal(name.into())
-    }
-
-    /// Contents of the `href` attribute of the link
-    ///
-    /// For [`LinkAction::Href`] this is the target URL.
-    ///
-    /// For [`LinkAction::ToggleModal`] this will always be `#`
-    pub fn href(&self) -> Cow<'static, str> {
-        match self {
-            LinkAction::Href(url) => url.clone(),
-            LinkAction::ToggleModal(_) => "#".into(),
-        }
-    }
-
-    /// Additional properties to add to the containing link.
-    ///
-    /// Regular [`LinkAction::Href`] links won't have any, whereas
-    /// [`LinkAction::ToggleModal`] will have extra properties indicating
-    /// to [bootstrap](https://getbootstrap.com/docs/4.0/components/modal/)
-    /// which modal to toggle.
-    pub fn props(&self) -> Cow<'static, str> {
-        match self {
-            LinkAction::Href(_) => "".into(),
-            LinkAction::ToggleModal(modal) => {
-                format!(" data-toggle=\"modal\" data-target=\"#{modal}\"").into()
-            }
-        }
-    }
-}
 
 /// A simple Label
 pub struct Label(Cow<'static, str>);
@@ -86,51 +42,6 @@ impl Label {
         PlainLink {
             label: self.0,
             active: false,
-            action,
-        }
-    }
-}
-
-/// A plain link without an icon.
-pub struct PlainLink {
-    pub label: Cow<'static, str>,
-    pub active: bool,
-    pub action: LinkAction,
-}
-
-impl PlainLink {
-    pub fn new<S: Into<Cow<'static, str>>>(label: S, action: LinkAction) -> Self {
-        PlainLink {
-            label: label.into(),
-            active: false,
-            action,
-        }
-    }
-
-    pub fn with_icon(self, icon: Icon) -> IconLink {
-        IconLink {
-            label: self.label,
-            icon,
-            active: self.active,
-            action: self.action,
-        }
-    }
-}
-
-/// A link with an associated Font-Awesome icon.
-pub struct IconLink {
-    pub label: Cow<'static, str>,
-    pub icon: Icon,
-    pub active: bool,
-    pub action: LinkAction,
-}
-
-impl IconLink {
-    pub fn new<S: Into<Cow<'static, str>>>(label: S, icon: Icon, action: LinkAction) -> Self {
-        IconLink {
-            label: label.into(),
-            active: false,
-            icon,
             action,
         }
     }

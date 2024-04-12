@@ -97,16 +97,14 @@ async fn login(State(state): State<Arc<RwLock<LoginState>>>) -> impl IntoRespons
                 email: login.email.clone().map(Cow::from),
                 unauthenticated_nav: Some(UnauthenticatedNav {
                     header_link: PlainLink::new("Back to front page", LinkAction::Href("/".into())),
-                    login_link: Some(IconLink::new(
-                        "Log In",
-                        icons::fa::DOOR_CLOSED,
-                        LinkAction::to("/login"),
-                    )),
-                    signup_link: Some(IconLink::new(
-                        "Sign Up",
-                        icons::fa::TICKET_ALT,
-                        LinkAction::to("/signup"),
-                    )),
+                    login_link: Some(
+                        IconLink::new("Log In", icons::fa::DOOR_CLOSED, LinkAction::to("/login"))
+                            .into(),
+                    ),
+                    signup_link: Some(
+                        IconLink::new("Sign Up", icons::fa::TICKET_ALT, LinkAction::to("/signup"))
+                            .into(),
+                    ),
                 }),
                 email_feedback: login.email_feedback.clone().map(Cow::from),
                 password_feedback: login.password_feedback.clone().map(Cow::from),
@@ -126,16 +124,14 @@ async fn signup(State(state): State<Arc<RwLock<LoginState>>>) -> impl IntoRespon
 
                 unauthenticated_nav: Some(UnauthenticatedNav {
                     header_link: PlainLink::new("Back to front page", LinkAction::Href("/".into())),
-                    login_link: Some(IconLink::new(
-                        "Log In",
-                        icons::fa::DOOR_CLOSED,
-                        LinkAction::to("/login"),
-                    )),
-                    signup_link: Some(IconLink::new(
-                        "Sign Up",
-                        icons::fa::TICKET_ALT,
-                        LinkAction::to("/signup"),
-                    )),
+                    login_link: Some(
+                        IconLink::new("Log In", icons::fa::DOOR_CLOSED, LinkAction::to("/login"))
+                            .into(),
+                    ),
+                    signup_link: Some(
+                        IconLink::new("Sign Up", icons::fa::TICKET_ALT, LinkAction::to("/signup"))
+                            .into(),
+                    ),
                 }),
                 email_feedback: login.email_feedback.clone().map(Cow::from),
                 password_feedback: login.password_feedback.clone().map(Cow::from),

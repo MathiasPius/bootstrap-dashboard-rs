@@ -10,10 +10,7 @@
         {% match login_link %}
         {% when Some with (link) %}
         <li class="nav-item">
-            <a class="nav-link" href="{{ link.action.href() }}" {{ link.action.props()|safe }} role="button">
-                <i class="fas fa-fw {{ link.icon }}"></i>
-                <span class="ml-2">{{ link.label }}</span>
-            </a>
+            {{ link|safe }}
         </li>
         {% when None %}
         {% endmatch %}
@@ -21,10 +18,7 @@
         {% match signup_link %}
         {% when Some with (link) %}
         <li class="nav-item">
-            <a class="nav-link" href="{{ link.action.href() }}" {{ link.action.props()|safe }} role="button">
-                <i class="fas fa-fw {{ link.icon }}"></i>
-                <span class="ml-2">{{ link.label }}</span>
-            </a>
+            {{ link|safe }}
         </li>
         {% when None %}
         {% endmatch %}
