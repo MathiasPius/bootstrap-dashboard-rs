@@ -12,18 +12,18 @@ use askama::Template;
 #[template(path = "dynamic.html")]
 pub struct Dynamic<T: Display> {
     pub content: T,
-    hx: Option<Hx>,
+    hx: Option<HxSwap>,
 }
 
 impl<T: Display> Dynamic<T> {
-    pub fn new(value: T, hx: Hx) -> Self {
+    pub fn new(value: T, hx: HxSwap) -> Self {
         Dynamic {
             content: value,
             hx: Some(hx),
         }
     }
 
-    pub fn with_hx(self, hx: Hx) -> Self {
+    pub fn with_hx(self, hx: HxSwap) -> Self {
         Dynamic {
             content: self.content,
             hx: Some(hx),
@@ -41,11 +41,11 @@ impl<T: Display> From<T> for Dynamic<T> {
 }
 
 pub trait IntoDynamic: Display + Sized {
-    fn with_hx(self, hx: Hx) -> Dynamic<Self>;
+    fn with_hx(self, hx: HxSwap) -> Dynamic<Self>;
 }
 
 impl<T: Display> IntoDynamic for T {
-    fn with_hx(self, hx: Hx) -> Dynamic<Self> {
+    fn with_hx(self, hx: HxSwap) -> Dynamic<Self> {
         Dynamic {
             content: self,
             hx: Some(hx),
@@ -54,7 +54,7 @@ impl<T: Display> IntoDynamic for T {
 }
 
 #[derive(Debug, Clone)]
-pub struct Hx {
+pub struct HxSwap {
     url: Request,
     pub target: Option<Target>,
     pub triggers: Vec<Trigger>,
@@ -76,9 +76,9 @@ impl Display for Request {
     }
 }
 
-impl Hx {
+impl HxSwap {
     pub fn get<T: Into<Cow<'static, str>>>(path: T) -> Self {
-        Hx {
+        HxSwap {
             url: Request::Get(path.into()),
             target: None,
             triggers: vec![],
@@ -87,7 +87,7 @@ impl Hx {
     }
 
     pub fn post<T: Into<Cow<'static, str>>>(path: T) -> Self {
-        Hx {
+        HxSwap {
             url: Request::Post(path.into()),
             target: None,
             triggers: vec![],
@@ -111,7 +111,7 @@ impl Hx {
     }
 }
 
-impl Display for Hx {
+impl Display for HxSwap {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.url)?;
 
@@ -432,7 +432,7 @@ impl Display for SwapTarget {
 #[cfg(test)]
 #[test]
 pub fn hx_construction() {
-    let props = Hx::get("/notifications")
+    let props = HxSwap::get("/notifications")
         .with_target("div#lol")
         .with_trigger(TriggerEvent::Every(Duration::from_millis(1500)).with_conditional("ctrlKey"))
         .with_trigger(

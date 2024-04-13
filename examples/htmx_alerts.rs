@@ -7,7 +7,7 @@ use axum::{
     Router,
 };
 use bootstrap_dashboard::{
-    htmx::{Dynamic, Hx, IntoDynamic, TriggerEvent},
+    htmx::{Dynamic, HxSwap, IntoDynamic, TriggerEvent},
     icons, Alert, AlertList, Alerts, Dashboard, Group, IconLink, LinkAction, Page, Sidebar,
 };
 use tokio::{net::TcpListener, sync::RwLock};
@@ -86,6 +86,6 @@ async fn alerts(State(alerts): State<Arc<RwLock<Vec<Alert>>>>) -> Dynamic<AlertL
     let alerts = alerts.read().await.iter().cloned().collect();
 
     AlertList(alerts).with_hx(
-        Hx::get(format!("/alerts")).with_trigger(TriggerEvent::Every(Duration::from_secs(1))),
+        HxSwap::get(format!("/alerts")).with_trigger(TriggerEvent::Every(Duration::from_secs(1))),
     )
 }
