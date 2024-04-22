@@ -28,7 +28,7 @@
     <!-- Nav Item - {{ item.label() }} -->
     {% match item %}
     {% when NavItem::Link with (navlink) %}
-    <li class="nav-item {% if navlink.active() %}active{% endif %}">
+    <li class="nav-item{% if navlink.active() %} active{% endif %}">
         <a class="nav-link" href="{{ navlink.action().href() }}" {{ navlink.action().props()|safe }}>
             {% match navlink.icon() %}
             {% when Some with (icon) %}
@@ -37,14 +37,15 @@
             {% endmatch %}
             <span>{{ navlink.label() }}</span></a>
     </li>
-    {% when NavItem::Collapsible with { label, icon, subgroups } %}
+    {% when NavItem::Collapsible with { label, icon, subgroups, collapsed } %}
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#{{ label }}" aria-expanded="true"
-            aria-controls="{{ label }}">
+        <a class="nav-link{% if collapsed %} collapsed{% endif %}" href="#" data-toggle="collapse"
+            data-target="#{{ label }}" aria-expanded="{{ !collapsed }}" aria-controls="{{ label }}">
             <i class="fas fa-fw {{ icon }}"></i>
             <span>{{ label }}</span>
         </a>
-        <div id="{{ label }}" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="{{ label }}" class="collapse{% if !collapsed %} show{% endif %}" aria-labelledby="headingPages"
+            data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 {% for subgroup in subgroups %}
                 {% match subgroup.label %}
@@ -54,7 +55,8 @@
                 {% endmatch %}
 
                 {% for sublink in subgroup.links %}
-                <a class="collapse-item" href="{{ sublink.action.href() }}" {{ sublink.action.props()|safe }}>{{
+                <a class="collapse-item{% if sublink.active %} active{% endif %}" href="{{ sublink.action.href() }}" {{
+                    sublink.action.props()|safe }}>{{
                     sublink.label }}</a>
                 {% endfor %}
                 {% endfor %}

@@ -70,6 +70,11 @@ pub enum NavItem {
         icon: Icon,
         /// [`SubGroup`] elements contained within the collapsible menu.
         subgroups: Vec<SubGroup>,
+        /// Whether the group should be collapsed or not.
+        ///
+        /// Collapsed by default, expanded when a child link is active
+        /// or clicked by the user.
+        collapsed: bool,
     },
 }
 
@@ -83,6 +88,7 @@ impl NavItem {
             label: label.into(),
             icon,
             subgroups,
+            collapsed: true,
         }
     }
 }
@@ -137,6 +143,10 @@ impl SubGroup {
             label: self.label,
             links: self.links,
         }
+    }
+
+    pub fn has_active_link(&self) -> bool {
+        self.links.iter().any(|link| link.active)
     }
 }
 
@@ -248,11 +258,16 @@ impl Sidebar {
                             break 'outer;
                         }
                     }
-                    NavItem::Collapsible { subgroups, .. } => {
+                    NavItem::Collapsible {
+                        subgroups,
+                        collapsed,
+                        ..
+                    } => {
                         for subgroup in subgroups {
                             for link in &mut subgroup.links {
                                 if selector(&link.action, &link.label) {
                                     link.active = true;
+                                    *collapsed = false;
                                     break 'outer;
                                 }
                             }
