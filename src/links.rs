@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use askama::Template;
 
-use crate::Icon;
+use crate::{modal::Modal, Icon};
 
 /// Action to take on link press.
 ///
@@ -18,8 +18,12 @@ impl LinkAction {
         LinkAction::Href(url.into())
     }
 
-    pub fn modal<S: Into<Cow<'static, str>>>(name: S) -> Self {
+    pub fn modal_name<S: Into<Cow<'static, str>>>(name: S) -> Self {
         LinkAction::ToggleModal(name.into())
+    }
+
+    pub fn modal(modal: &Modal) -> Self {
+        LinkAction::ToggleModal(modal.id.clone().into())
     }
 
     /// Contents of the `href` attribute of the link

@@ -29,6 +29,7 @@ use favicons::FavIcons;
 pub use htmx::Dynamic;
 pub use icons::Icon;
 pub use links::{IconLink, LinkAction, NavLink, PlainLink};
+use modal::Modal;
 pub use page_header::PageHeader;
 pub use sidebar::*;
 pub use userinfo::*;
@@ -63,6 +64,7 @@ pub struct Page<Content: Display = &'static str> {
     /// of how this could be done using [axum](https://github.com/tokio-rs/axum)
     pub static_path: Cow<'static, str>,
     pub favicons: Option<FavIcons>,
+    pub modals: Vec<Modal>,
     pub content: Content,
 }
 
@@ -75,6 +77,7 @@ impl Page<&'static str> {
             title: title.into(),
             static_path: static_path.into(),
             favicons: None,
+            modals: vec![],
             content: "",
         }
     }
@@ -86,17 +89,19 @@ impl<Content: Display> Page<Content> {
             title: self.title,
             static_path: self.static_path,
             favicons: self.favicons,
+            modals: self.modals,
             content,
         }
     }
 
-    pub fn with_favicons(self, favicons: FavIcons) -> Self {
-        Page {
-            title: self.title,
-            static_path: self.static_path,
-            favicons: Some(favicons),
-            content: self.content,
-        }
+    pub fn with_favicons(mut self, favicons: FavIcons) -> Self {
+        self.favicons = Some(favicons);
+        self
+    }
+
+    pub fn with_modal(mut self, modal: Modal) -> Self {
+        self.modals.push(modal);
+        self
     }
 }
 

@@ -137,7 +137,7 @@ async fn dashboard_builder(active_label: &str) -> Dashboard {
             vec![IconLink::new(
                 "Logout",
                 icons::fa::SIGN_OUT_ALT,
-                LinkAction::modal("logoutModal"),
+                LinkAction::modal_name("logoutModal"),
             )
             .into()],
         ],

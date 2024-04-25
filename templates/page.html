@@ -32,6 +32,10 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+    {% for modal in modals %}
+    {{ modal|safe }}
+    {% endfor %}
+
     <!-- Bootstrap core JavaScript-->
     <script src="{{ static_path }}/js/jquery.min.js"></script>
     <script src="{{ static_path }}/js/bootstrap.bundle.min.js"></script>
