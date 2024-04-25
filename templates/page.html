@@ -16,6 +16,13 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ static_path }}/css/sb-admin-2.min.css" rel="stylesheet">
+
+    {% match favicons %}
+    {% when Some with (favicons) %}
+    <!-- FavIcons -->
+    {{ favicons|safe }}
+    {% when None %}
+    {% endmatch %}
 </head>
 
 <body id="page-top" class="bg-gradient-primary">

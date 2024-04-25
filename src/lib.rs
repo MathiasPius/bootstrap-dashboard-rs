@@ -11,6 +11,7 @@ use askama::Template;
 mod alerts;
 pub mod card;
 mod color;
+pub mod favicons;
 pub mod files;
 pub mod grid;
 pub mod htmx;
@@ -23,6 +24,7 @@ mod userinfo;
 
 pub use alerts::*;
 pub use color::*;
+use favicons::FavIcons;
 pub use htmx::Dynamic;
 pub use icons::Icon;
 pub use links::{IconLink, LinkAction, NavLink, PlainLink};
@@ -59,6 +61,7 @@ pub struct Page<Content: Display = &'static str> {
     /// See [`files::serve_at`] for more information as well as an example
     /// of how this could be done using [axum](https://github.com/tokio-rs/axum)
     pub static_path: Cow<'static, str>,
+    pub favicons: Option<FavIcons>,
     pub content: Content,
 }
 
@@ -70,6 +73,7 @@ impl Page<&'static str> {
         Page {
             title: title.into(),
             static_path: static_path.into(),
+            favicons: None,
             content: "",
         }
     }
@@ -80,7 +84,17 @@ impl<Content: Display> Page<Content> {
         Page {
             title: self.title,
             static_path: self.static_path,
+            favicons: None,
             content,
+        }
+    }
+
+    pub fn with_favicons(self, favicons: FavIcons) -> Self {
+        Page {
+            title: self.title,
+            static_path: self.static_path,
+            favicons: Some(favicons),
+            content: self.content,
         }
     }
 }
