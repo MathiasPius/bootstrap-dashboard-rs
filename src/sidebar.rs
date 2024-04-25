@@ -7,6 +7,31 @@ use crate::{
     Icon,
 };
 
+#[derive(Template)]
+#[template(
+    ext = "html",
+    source = r#"
+<div class="sidebar-brand-icon">
+    {% match self %}
+    {% when BrandIcon::Icon with (icon) %}
+    <i class="fas {{ icon }}"></i>
+    {% when BrandIcon::Image with (image) %}
+    <img src="{{ image }}"/>
+    {% endmatch %}
+</div>
+"#
+)]
+pub enum BrandIcon {
+    Icon(Icon),
+    Image(String),
+}
+
+impl From<Icon> for BrandIcon {
+    fn from(value: Icon) -> Self {
+        BrandIcon::Icon(value)
+    }
+}
+
 /// Sidebar menu [`Group`]s have optional labels, and are always
 /// separated by a divider.
 pub struct Group {
@@ -174,15 +199,15 @@ impl SubGroup {
 #[template(path = "sidebar.html")]
 pub struct Sidebar {
     pub name: Cow<'static, str>,
-    pub logo: Icon,
+    pub brand_icon: BrandIcon,
     pub groups: Vec<Group>,
 }
 
 impl Sidebar {
-    pub fn new<S: Into<Cow<'static, str>>>(name: S, logo: Icon) -> Self {
+    pub fn new<S: Into<Cow<'static, str>>, I: Into<BrandIcon>>(name: S, brand_icon: I) -> Self {
         Sidebar {
             name: name.into(),
-            logo,
+            brand_icon: brand_icon.into(),
             groups: Vec::new(),
         }
     }

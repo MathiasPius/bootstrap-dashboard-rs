@@ -47,7 +47,7 @@ async fn configuration() -> impl IntoResponse {
 fn dashboard_builder(active_label: &str) -> Dashboard {
     let sidebar = Sidebar {
         name: "Dashboard".into(),
-        logo: icons::fa::LAUGH_SQUINT,
+        brand_icon: icons::fa::LAUGH_SQUINT.into(),
         groups: vec![
             Group::unlabeled()
                 .with_item(IconLink::new(
