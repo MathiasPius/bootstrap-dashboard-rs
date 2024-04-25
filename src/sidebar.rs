@@ -23,7 +23,7 @@ use crate::{
 )]
 pub enum BrandIcon {
     Icon(Icon),
-    Image(String),
+    Image(Cow<'static, str>),
 }
 
 impl From<Icon> for BrandIcon {
