@@ -84,7 +84,7 @@ impl<Content: Display> Page<Content> {
         Page {
             title: self.title,
             static_path: self.static_path,
-            favicons: None,
+            favicons: self.favicons,
             content,
         }
     }
