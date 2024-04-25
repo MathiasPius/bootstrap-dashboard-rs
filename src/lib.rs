@@ -18,6 +18,7 @@ pub mod htmx;
 pub mod icons;
 mod links;
 pub mod login;
+pub mod modal;
 mod page_header;
 mod sidebar;
 mod userinfo;
