@@ -20,7 +20,7 @@
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" name="email"
-                            class="form-control{% if email_feedback.is_some() %} is-invalid{{% else %} is-valid% endif %}"
+                            class="form-control{% if email_feedback.is_some() %} is-invalid{% else %} is-valid{% endif %}"
                             id="email" placeholder="Email" {% match email %}{% when Some with (email)
                             %}value="{{ email }}" {% when None %}{% endmatch %}>
                         {% match email_feedback %}
