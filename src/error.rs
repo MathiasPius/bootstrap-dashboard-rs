@@ -1,4 +1,6 @@
-use std::fmt::Display;
+use std::{borrow::Cow, fmt::Display};
+
+use askama::Template;
 
 #[derive(Template)]
 #[template(path = "error.html")]
@@ -8,7 +10,7 @@ pub struct Error<T: Display> {
 }
 
 impl<T: Display> Error<T> {
-    pub fn new(title: &str, message: T) -> Self {
+    pub fn new<H: Into<Cow<'static, str>>>(title: H, message: T) -> Self {
         Self {
             title: title.into(),
             message,
