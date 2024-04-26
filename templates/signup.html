@@ -20,7 +20,7 @@
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" name="email"
-                            class="form-control{% if email_feedback.is_some() %} is-invalid{% else %} is-valid{% endif %}"
+                            class="form-control{% if email_feedback.is_some() %} is-invalid{% else if password_feedback.is_some() %} is-valid{% endif %}"
                             id="email" placeholder="Email" {% match email %}{% when Some with (email)
                             %}value="{{ email }}" {% when None %}{% endmatch %}>
                         {% match email_feedback %}
@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" name="password"
-                            class="form-control{% if password_feedback.is_some() %} is-invalid{% else %} is-valid{% endif %}"
+                            class="form-control{% if password_feedback.is_some() %} is-invalid{% else if email_feedback.is_some() %} is-valid{% endif %}"
                             id="password" placeholder="Password">
                         {% match password_feedback %}
                         {% when Some with (feedback ) %}
