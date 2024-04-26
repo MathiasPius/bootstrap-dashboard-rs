@@ -8,7 +8,7 @@
         <div class="col-md-6">
             <div class="card px-5 py-5" id="form1">
                 <h1 class="h3">Log In</h1>
-                <form method="POST" action="{{ submit_target }}" {% if feedback.is_some() || email_feedback.is_some() ||
+                <form method="POST" action="{{ submit_target }}" {% if email_feedback.is_some() ||
                     password_feedback.is_some() %}class="was-validated" {% endif %}>
                     {% match feedback %}
                     {% when Some with (feedback) %}
@@ -20,12 +20,12 @@
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" name="email"
-                            class="form-control{% if email_feedback.is_some() %} is-invalid{% endif %}" id="email"
-                            placeholder="Email" {% match email %}{% when Some with (email) %}value="{{ email }}" {% when
-                            None %}{% endmatch %}>
+                            class="form-control{% if email_feedback.is_some() %} is-invalid{% else %} is-valid{% endif %}"
+                            id="email" placeholder="Email" {% match email %}{% when Some with (email)
+                            %}value="{{ email }}" {% when None %}{% endmatch %}>
                         {% match email_feedback %}
                         {% when Some with (feedback ) %}
-                        <div class="invalid-feedback">
+                        <div class="text-danger">
                             {{ feedback }}
                         </div>
                         {% when None %}
@@ -34,11 +34,11 @@
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" name="password"
-                            class="form-control{% if password_feedback.is_some() %} is-invalid{% endif %}" id="password"
-                            placeholder="Password">
+                            class="form-control{% if password_feedback.is_some() %} is-invalid{% else %} is-valid{% endif %}"
+                            id="password" placeholder="Password">
                         {% match password_feedback %}
                         {% when Some with (feedback ) %}
-                        <div class="invalid-feedback">
+                        <div class="text-danger">
                             {{ feedback }}
                         </div>
                         {% when None %}
