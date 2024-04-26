@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 #[derive(Debug, Clone, Copy)]
 /// One of the [Bootstrap-defined colors](https://getbootstrap.com/docs/4.6/utilities/colors/).
 pub enum Color {
@@ -23,5 +25,26 @@ impl Color {
             Color::Light => "bg-light",
             Color::Dark => "bg-dark",
         }
+    }
+}
+
+impl AsRef<str> for Color {
+    fn as_ref(&self) -> &str {
+        match self {
+            Color::Primary => "primary",
+            Color::Secondary => "secondary",
+            Color::Success => "success",
+            Color::Danger => "danger",
+            Color::Warning => "warning",
+            Color::Info => "info",
+            Color::Light => "light",
+            Color::Dark => "dark",
+        }
+    }
+}
+
+impl Display for Color {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_ref())
     }
 }
