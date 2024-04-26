@@ -9,7 +9,7 @@
             <div class="card px-5 py-5" id="form1">
                 <h1 class="h3">Log In</h1>
                 <form method="POST" action="{{ submit_target }}" {% if feedback.is_some() || email_feedback.is_some() ||
-                    password_feedback.is_some() %}class="was-validated" {% endif %}>
+                    password_feedback.is_some() %}class="was-validated is-invalid" {% endif %}>
                     {% match feedback %}
                     {% when Some with (feedback) %}
                     <div class="invalid-feedback">
