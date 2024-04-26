@@ -11,6 +11,7 @@ use askama::Template;
 mod alerts;
 pub mod card;
 mod color;
+mod error;
 pub mod favicons;
 pub mod files;
 pub mod grid;
@@ -25,6 +26,7 @@ mod userinfo;
 
 pub use alerts::*;
 pub use color::*;
+pub use error::Error;
 use favicons::FavIcons;
 pub use htmx::Dynamic;
 pub use icons::Icon;
