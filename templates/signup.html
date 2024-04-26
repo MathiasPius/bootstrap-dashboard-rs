@@ -9,6 +9,13 @@
             <div class="card px-5 py-5" id="form1">
                 <h1 class="h3">Sign Up</h1>
                 <form method="POST" action="{{ submit_target }}">
+                    {% match feedback %}
+                    {% when Some with (feedback) %}
+                    <div class="invalid-feedback">
+                        {{ feedback }}
+                    </div>
+                    {% when None %}
+                    {% endmatch %}
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" name="email"
