@@ -6,9 +6,9 @@ use axum::{
     Router,
 };
 use bootstrap_dashboard::{
-    card::Card,
+    card::{Card, CardButton},
     grid::{Breakpoint, Column, Row},
-    icons, Alert, AlertList, Alerts, Dashboard, Group, IconLink, LinkAction, NavItem, Page,
+    icons, Alert, AlertList, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, Page,
     PlainLink, Sidebar, SubGroup, UserInfo,
 };
 use tokio::net::TcpListener;
@@ -64,6 +64,16 @@ async fn configuration() -> impl IntoResponse {
         .with_column(
             Card::new("Hello world")
                 .with_header("First card")
+                .with_button(
+                    CardButton::new("Info Here")
+                        .with_color(Color::Info)
+                        .with_outline(),
+                )
+                .with_button(
+                    CardButton::new("Link")
+                        .with_color(Color::Danger)
+                        .with_action(LinkAction::to("https://example.com")),
+                )
                 .to_string(),
         )
         .with_column(

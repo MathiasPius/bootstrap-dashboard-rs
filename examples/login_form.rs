@@ -108,6 +108,7 @@ async fn login(State(state): State<Arc<RwLock<LoginState>>>) -> impl IntoRespons
                 }),
                 email_feedback: login.email_feedback.clone().map(Cow::from),
                 password_feedback: login.password_feedback.clone().map(Cow::from),
+                feedback: None,
             })
             .to_string(),
     )
@@ -135,6 +136,7 @@ async fn signup(State(state): State<Arc<RwLock<LoginState>>>) -> impl IntoRespon
                 }),
                 email_feedback: login.email_feedback.clone().map(Cow::from),
                 password_feedback: login.password_feedback.clone().map(Cow::from),
+                feedback: None,
             })
             .to_string(),
     )

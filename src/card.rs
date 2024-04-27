@@ -2,12 +2,13 @@ use std::{borrow::Cow, fmt::Display};
 
 use askama::Template;
 
-use crate::{LinkAction, PlainLink};
+use crate::{Color, LinkAction, PlainLink};
 
 #[derive(Template)]
 #[template(path = "card.html")]
 pub struct Card<Content: Display = &'static str> {
     header: Option<Cow<'static, str>>,
+    buttons: Vec<CardButton>,
     context_links: Vec<ContextGroup>,
     content: Content,
 }
@@ -50,6 +51,7 @@ impl<Content: Display> Card<Content> {
     pub fn new(content: Content) -> Self {
         Card {
             header: None,
+            buttons: Vec::new(),
             context_links: Vec::new(),
             content,
         }
@@ -62,6 +64,44 @@ impl<Content: Display> Card<Content> {
 
     pub fn with_context_group(mut self, group: ContextGroup) -> Self {
         self.context_links.push(group);
+        self
+    }
+
+    pub fn with_button(mut self, button: CardButton) -> Self {
+        self.buttons.push(button);
+        self
+    }
+}
+
+pub struct CardButton {
+    pub label: Cow<'static, str>,
+    pub color: Color,
+    pub outline: bool,
+    pub action: Option<LinkAction>,
+}
+
+impl CardButton {
+    pub fn new<S: Into<Cow<'static, str>>>(label: S) -> Self {
+        CardButton {
+            label: label.into(),
+            color: Color::Primary,
+            outline: false,
+            action: None,
+        }
+    }
+
+    pub fn with_action(mut self, action: LinkAction) -> Self {
+        self.action = Some(action);
+        self
+    }
+
+    pub fn with_outline(mut self) -> Self {
+        self.outline = true;
+        self
+    }
+
+    pub fn with_color(mut self, color: Color) -> Self {
+        self.color = color;
         self
     }
 }
