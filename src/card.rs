@@ -15,35 +15,33 @@ pub struct Card<Content: Display = &'static str> {
 
 /// Context menu [`ContextGroup`]s have optional labels, and are always
 /// separated by a divider.
+#[derive(Default)]
 pub struct ContextGroup {
     /// Optional Group label.
     pub label: Option<Cow<'static, str>>,
     /// Group's navigation items.
     pub items: Vec<PlainLink>,
+    /// Optional color for the text,
+    pub color: Option<Color>,
 }
 
 impl ContextGroup {
-    pub fn new() -> Self {
+    pub fn new<S: Into<Cow<'static, str>>>(label: S) -> Self {
         ContextGroup {
-            label: None,
+            label: Some(label.into()),
             items: Vec::new(),
+            color: None,
         }
     }
 
-    pub fn with_label<S: Into<Cow<'static, str>>>(mut self, label: S) -> Self {
-        self.label = Some(label.into());
+    pub fn with_color(mut self, color: Color) -> Self {
+        self.color = Some(color);
         self
     }
 
     pub fn with_link<S: Into<Cow<'static, str>>>(mut self, label: S, action: LinkAction) -> Self {
         self.items.push(PlainLink::new(label, action));
         self
-    }
-}
-
-impl Default for ContextGroup {
-    fn default() -> Self {
-        Self::new()
     }
 }
 

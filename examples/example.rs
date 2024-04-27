@@ -84,8 +84,7 @@ async fn configuration() -> impl IntoResponse {
                 Card::new("Hello world")
                     .with_header("Large Card")
                     .with_context_group(
-                        ContextGroup::new()
-                            .with_label("Context Label")
+                        ContextGroup::new("Context Label")
                             .with_link("Link", LinkAction::to("https://example.com")),
                     )
                     .to_string(),
@@ -108,8 +107,7 @@ async fn configuration() -> impl IntoResponse {
                         .with_action(LinkAction::to("https://example.com")),
                 )
                 .with_context_group(
-                    ContextGroup::new()
-                        .with_label("Context Label")
+                    ContextGroup::default()
                         .with_link("Link", LinkAction::to("https://example.com")),
                 )
                 .to_string(),
