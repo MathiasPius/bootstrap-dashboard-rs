@@ -6,7 +6,7 @@ use axum::{
     Router,
 };
 use bootstrap_dashboard::{
-    card::{Card, CardButton},
+    card::{Card, CardButton, ContextGroup},
     grid::{Breakpoint, Column, Row},
     icons, Alert, AlertList, Alerts, Color, Dashboard, Group, IconLink, LinkAction, NavItem, Page,
     PlainLink, Sidebar, SubGroup, UserInfo,
@@ -83,9 +83,41 @@ async fn configuration() -> impl IntoResponse {
             Column::new(
                 Card::new("Hello world")
                     .with_header("Large Card")
+                    .with_context_group(
+                        ContextGroup::new()
+                            .with_label("Context Label")
+                            .with_link("Link", LinkAction::to("https://example.com")),
+                    )
                     .to_string(),
             )
             .with_size(Breakpoint::ExtraLarge, 7),
+        );
+
+    let row2 = Row::new()
+        .with_column(
+            Card::new("Combined buttons and context group")
+                .with_header("Combined")
+                .with_button(
+                    CardButton::new("Info Here")
+                        .with_color(Color::Info)
+                        .with_outline(),
+                )
+                .with_button(
+                    CardButton::new("Link")
+                        .with_color(Color::Danger)
+                        .with_action(LinkAction::to("https://example.com")),
+                )
+                .with_context_group(
+                    ContextGroup::new()
+                        .with_label("Context Label")
+                        .with_link("Link", LinkAction::to("https://example.com")),
+                )
+                .to_string(),
+        )
+        .with_column(
+            Card::new("Combined buttons and context group")
+                .with_header("Plain")
+                .to_string(),
         );
 
     Html(
@@ -94,7 +126,7 @@ async fn configuration() -> impl IntoResponse {
                 dashboard_builder("Configuration")
                     .await
                     .with_page_header("Configuration")
-                    .replace_content(row1),
+                    .replace_content(format!("{row1}{row2}")),
             )
             .to_string(),
     )
